@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fazenda Inteligente CBR</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">Inteligência Artificial aplicada à agricultura</p>
+      <h1>Fazenda Inteligente CBR</h1>
+      <p>
+        Um jogo/simulador acadêmico em que a IA compara a situação atual da plantação
+        com experiências anteriores para recomendar uma ação.
+      </p>
+    </div>
+    <div class="hero__badge" aria-label="Ciclo CBR">
+      <span>Retrieve</span>
+      <span>Reuse</span>
+      <span>Revise</span>
+      <span>Retain</span>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="farm-panel card" aria-labelledby="farm-title">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Simulação</p>
+          <h2 id="farm-title">Plantação</h2>
+        </div>
+        <div class="status-pill" id="plantStatus">Aguardando análise</div>
+      </div>
+
+      <div class="farm-scene" id="farmScene" aria-label="Área visual da plantação">
+        <div class="sun" aria-hidden="true"></div>
+        <div class="cloud cloud-one" aria-hidden="true"></div>
+        <div class="cloud cloud-two" aria-hidden="true"></div>
+        <div class="rain" id="rainEffect" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="field" id="fieldRows"></div>
+      </div>
+
+      <div class="current-case">
+        <h3>Caso atual</h3>
+        <p>
+          O caso atual é a fotografia do problema da plantação agora: clima, solo,
+          folhas, pragas e crescimento. Esses atributos serão comparados com a base.
+        </p>
+        <div class="case-tags" id="currentCaseTags"></div>
+      </div>
+    </section>
+
+    <section class="controls card" aria-labelledby="controls-title">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Entrada do jogador</p>
+          <h2 id="controls-title">Situação da plantação</h2>
+        </div>
+        <button class="icon-button" id="randomButton" type="button" title="Gerar situação aleatória">↻</button>
+      </div>
+
+      <form id="caseForm" class="case-form">
+        <label>
+          Clima
+          <select id="clima" name="clima">
+            <option value="seco">Seco</option>
+            <option value="chuvoso">Chuvoso</option>
+            <option value="nublado">Nublado</option>
+            <option value="quente">Quente</option>
+          </select>
+        </label>
+
+        <label>
+          Solo
+          <select id="solo" name="solo">
+            <option value="seco">Seco</option>
+            <option value="normal">Normal</option>
+            <option value="encharcado">Encharcado</option>
+            <option value="pobre em nutrientes">Pobre em nutrientes</option>
+          </select>
+        </label>
+
+        <label>
+          Folhas
+          <select id="folhas" name="folhas">
+            <option value="verdes">Verdes</option>
+            <option value="amarelas">Amarelas</option>
+            <option value="murchas">Murchas</option>
+            <option value="com manchas">Com manchas</option>
+          </select>
+        </label>
+
+        <label>
+          Pragas
+          <select id="pragas" name="pragas">
+            <option value="nenhuma">Nenhuma</option>
+            <option value="baixa">Baixa</option>
+            <option value="média">Média</option>
+            <option value="alta">Alta</option>
+          </select>
+        </label>
+
+        <label>
+          Crescimento
+          <select id="crescimento" name="crescimento">
+            <option value="baixo">Baixo</option>
+            <option value="médio">Médio</option>
+            <option value="alto">Alto</option>
+          </select>
+        </label>
+      </form>
+
+      <div class="actions">
+        <button class="primary-button" id="analyzeButton" type="button">Analisar com CBR</button>
+        <button class="secondary-button" id="applyButton" type="button" disabled>Aplicar ação recomendada</button>
+      </div>
+
+      <div class="tip-box">
+        <strong>Similaridade</strong>
+        <p>
+          É a pontuação que indica o quanto o caso atual parece com um caso antigo.
+          Quanto maior a porcentagem, mais forte é a comparação.
+        </p>
+      </div>
+    </section>
+
+    <section class="cbr-panel card" aria-labelledby="cbr-title">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Painel CBR</p>
+          <h2 id="cbr-title">Recomendação da IA</h2>
+        </div>
+        <span class="similarity-score" id="similarityScore">0%</span>
+      </div>
+
+      <div class="recommendation" id="recommendationBox">
+        <p>Gere ou escolha uma situação e clique em <strong>Analisar com CBR</strong>.</p>
+      </div>
+
+      <div class="matched-case" id="matchedCaseBox">
+        <h3>Caso mais parecido</h3>
+        <p>Nenhum caso recuperado ainda.</p>
+      </div>
+
+      <div class="cycle-grid" aria-label="Ciclo do Raciocínio Baseado em Casos">
+        <article class="cycle-step" id="retrieveStep">
+          <span>1</span>
+          <h3>Retrieve</h3>
+          <p>Recupera o caso mais parecido da base.</p>
+        </article>
+        <article class="cycle-step" id="reuseStep">
+          <span>2</span>
+          <h3>Reuse</h3>
+          <p>Reaproveita a solução do caso antigo.</p>
+        </article>
+        <article class="cycle-step" id="reviseStep">
+          <span>3</span>
+          <h3>Revise</h3>
+          <p>Adapta a solução para o cenário atual.</p>
+        </article>
+        <article class="cycle-step" id="retainStep">
+          <span>4</span>
+          <h3>Retain</h3>
+          <p>Depois da ação, salva o novo caso resolvido.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="knowledge card" aria-labelledby="knowledge-title">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Base de Casos</p>
+          <h2 id="knowledge-title">Experiências armazenadas</h2>
+        </div>
+        <button class="danger-button" id="clearCasesButton" type="button">Limpar salvos</button>
+      </div>
+
+      <div class="stats-grid">
+        <div>
+          <strong id="totalCases">0</strong>
+          <span>casos disponíveis</span>
+        </div>
+        <div>
+          <strong id="savedCases">0</strong>
+          <span>casos aprendidos</span>
+        </div>
+      </div>
+
+      <p class="help-text">
+        A base de casos é a memória do sistema. Ela começa com exemplos prontos e
+        cresce quando o jogador aplica uma recomendação e o resultado é salvo.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Resumo</th>
+              <th>Solução</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <tbody id="casesTableBody">
+            <tr>
+              <td colspan="4">Nenhum caso aprendido ainda.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="explanation card" aria-labelledby="explanation-title">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Explicação da IA</p>
+          <h2 id="explanation-title">Modo Explicação</h2>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="explanationToggle" checked>
+          <span>Ativo</span>
+        </label>
+      </div>
+
+      <div id="explanationContent" class="explanation-content">
+        <p>
+          Este sistema não usa machine learning complexo. Ele usa IA simbólica baseada
+          em conhecimento: compara o problema atual com casos conhecidos e reaproveita
+          a solução mais adequada.
+        </p>
+        <ul>
+          <li><strong>Retrieve:</strong> busca o caso antigo mais parecido.</li>
+          <li><strong>Reuse:</strong> reutiliza a solução daquele caso.</li>
+          <li><strong>Revise:</strong> ajusta a recomendação se alguma regra importante aparecer.</li>
+          <li><strong>Retain:</strong> salva a nova experiência para consultas futuras.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Projeto acadêmico de Inteligência Artificial - Raciocínio Baseado em Casos.</p>
+  </footer>
+
+  <script src="js/cases.js"></script>
+  <script src="js/cbr.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
