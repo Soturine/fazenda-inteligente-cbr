@@ -212,6 +212,30 @@ kbd {
   color: var(--soil-dark);
   font-weight: 900;
   pointer-events: none;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.game-message.is-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
+.game-message.is-success,
+.game-message.is-cbr {
+  border-color: rgba(112, 184, 93, 0.5);
+  background: rgba(255, 252, 230, 0.96);
+}
+
+.game-message.is-warning {
+  border-color: rgba(244, 204, 88, 0.72);
+}
+
+.game-message.is-error {
+  border-color: rgba(185, 82, 52, 0.62);
+  background: rgba(255, 239, 228, 0.96);
 }
 
 .side-stack {

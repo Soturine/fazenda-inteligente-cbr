@@ -1,5 +1,5 @@
 ﻿import Phaser from "phaser";
-import { tileSize, toolLabels } from "../data/gameData";
+import { actionLabels, resultLabels, tileSize, toolLabels, weatherLabels } from "../data/gameData";
 import { Player } from "../entities/Player";
 import { Assistant } from "../entities/Assistant";
 import { CBRSystem } from "../systems/CBRSystem";
@@ -90,6 +90,7 @@ export class FarmScene extends Phaser.Scene {
     });
     this.ui.showAssistantWaiting();
     this.ui.syncSound(this.audio.isMuted);
+    this.ui.showInitialHint();
     this.syncUI();
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => this.handlePointerDown(pointer));
@@ -115,14 +116,14 @@ export class FarmScene extends Phaser.Scene {
   selectTool(tool: ToolId): void {
     this.inventory.setTool(tool);
     this.syncUI();
-    this.ui.showMessage(`Ferramenta atual: ${toolLabels[tool]}.`);
+    this.ui.showMessage(`Ferramenta atual: ${toolLabels[tool]}.`, { duration: 3200, type: "info" });
   }
 
   useTool(): void {
     const target = this.getTargetPlotInfo();
 
     if (!target) {
-      this.ui.showMessage("Fique sobre ou de frente para um canteiro para usar a ferramenta.");
+      this.ui.showMessage("Fique sobre ou de frente para um canteiro para usar a ferramenta.", { type: "error" });
       this.audio.play("error");
       return;
     }
@@ -131,7 +132,7 @@ export class FarmScene extends Phaser.Scene {
     const caseData = this.cbr.createCaseFromPlot(target.plot, this.weather.weather);
     const result = this.crops.applyTool(target.plot, this.inventory.currentTool, this.inventory, this.dayNight.currentDay);
 
-    this.ui.showMessage(result.message);
+    this.ui.showMessage(result.message, { type: result.ok ? "success" : "warning", duration: result.ok ? 4800 : 3800 });
 
     if (result.ok) {
       this.effects.playToolEffect(this.inventory.currentTool, target.tile);
@@ -160,7 +161,7 @@ export class FarmScene extends Phaser.Scene {
 
     if (!target) {
       this.ui.showNoPlot();
-      this.ui.showMessage("O assistente precisa de um canteiro perto de você.");
+      this.ui.showMessage("O assistente precisa de um canteiro perto de você.", { type: "error" });
       this.audio.play("error");
       return;
     }
@@ -175,7 +176,7 @@ export class FarmScene extends Phaser.Scene {
       const analysis = this.cbr.analyze(currentCase);
       this.ui.showAnalysis(analysis);
       this.effects.playCbrRecommendation(target.tile, this.map.assistantTile);
-      this.ui.showMessage(`Assistente CBR sugeriu: ${analysis.recommendedAction}.`);
+      this.ui.showMessage(`O espantalho recomendou: ${actionLabels[analysis.recommendedAction]}.`, { duration: 8000, type: "cbr" });
     });
   }
 
@@ -188,15 +189,16 @@ export class FarmScene extends Phaser.Scene {
     this.saveGame(false);
     this.syncUI();
 
-    let message = `Dia ${this.dayNight.currentDay}: clima ${this.weather.weather}. ${summary.grown} planta(s) cresceram.`;
+    let message = `Dia ${this.dayNight.currentDay}: clima ${weatherLabels[this.weather.weather]}. ${summary.grown} planta(s) cresceram.`;
     if (summary.problems > 0) {
       message += ` ${summary.problems} canteiro(s) precisam de cuidado.`;
     }
-    this.ui.showMessage(message, true);
+    this.ui.showMessage(message, { duration: 6500, type: summary.problems > 0 ? "warning" : "success" });
 
     if (summary.retained > 0 && summary.lastResult) {
       this.ui.showRetain(this.cbr.getLearnedCases().length, summary.lastResult);
       this.effects.playRetainGlow(this.map.assistantTile);
+      this.ui.showMessage(`Nova experiência salva na memória CBR: resultado ${resultLabels[summary.lastResult]}.`, { duration: 8000, type: "cbr" });
     }
   }
 
@@ -204,7 +206,7 @@ export class FarmScene extends Phaser.Scene {
     SaveSystem.saveGame(this.serialize());
 
     if (notify) {
-      this.ui.showMessage("Jogo salvo no navegador.");
+      this.ui.showMessage("Jogo salvo no navegador.", { duration: 3800, type: "success" });
     }
   }
 
@@ -220,7 +222,7 @@ export class FarmScene extends Phaser.Scene {
   toggleSound(): void {
     const muted = this.audio.toggleMuted();
     this.ui.syncSound(muted);
-    this.ui.showMessage(muted ? "Som desligado." : "Som ligado.");
+    this.ui.showMessage(muted ? "Som desligado." : "Som ligado.", { duration: 3000, type: "info" });
   }
 
   getTargetPlotInfo(): TargetPlotInfo | null {

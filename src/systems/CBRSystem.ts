@@ -1,4 +1,4 @@
-﻿import { actionLabels } from "../data/gameData";
+import { actionLabels, resultLabels } from "../data/gameData";
 import { initialCases } from "../data/initialCases";
 import type { CBRAction, CBRAnalysis, CBRCase, CBRCurrentCase, CropPlotState, PlantStage, SimilarityResult, Weather } from "../types";
 import { SaveSystem } from "./SaveSystem";
@@ -74,7 +74,7 @@ export class CBRSystem {
       reusedAction,
       recommendedAction: revised.action,
       adaptations: revised.adaptations,
-      explanation: this.buildExplanation(retrieved.case, retrieved.similarity, reusedAction, revised.action, revised.adaptations),
+      explanation: this.buildExplanation(retrieved.similarity, reusedAction, revised.action, revised.adaptations),
     };
   }
 
@@ -85,7 +85,7 @@ export class CBRSystem {
       ...caseData,
       acaoAplicada: action,
       resultado: result,
-      explicacao: `Caso aprendido no gameplay: ação ${actionLabels[action]} resultou em ${result}.`,
+      explicacao: `Caso aprendido no gameplay: ação ${actionLabels[action]} resultou em ${resultLabels[result]}.`,
       criadoEm: new Date().toISOString(),
     };
 
@@ -155,20 +155,20 @@ export class CBRSystem {
     return { action, adaptations };
   }
 
-  private buildExplanation(retrievedCase: CBRCase, similarity: SimilarityResult, reusedAction: CBRAction, recommendedAction: CBRAction, adaptations: string[]): string {
-    let text = `Já vi um caso parecido (${similarity.percentage}%). Recomendação: ${actionLabels[recommendedAction]}.`;
+  private buildExplanation(similarity: SimilarityResult, reusedAction: CBRAction, recommendedAction: CBRAction, adaptations: string[]): string {
+    let text = `Já vi um caso parecido com ${similarity.percentage}% de similaridade. Minha recomendação é ${actionLabels[recommendedAction]}.`;
 
     if (recommendedAction !== reusedAction) {
-      text += ` Adaptei a ação antiga, que era ${actionLabels[reusedAction]}.`;
+      text += ` Adaptei a experiência anterior, que indicava ${actionLabels[reusedAction]}.`;
     }
 
     if (adaptations.length > 0) {
       text += ` Motivo: ${adaptations.join("; ")}.`;
     } else {
-      text += " A ação antiga ainda faz sentido aqui.";
+      text += " A experiência recuperada ainda combina com este canteiro.";
     }
 
-    return `${text} Caso recuperado: ${retrievedCase.id}.`;
+    return text;
   }
 
   private mapGrowth(plot: CropPlotState): CBRCurrentCase["crescimento"] {

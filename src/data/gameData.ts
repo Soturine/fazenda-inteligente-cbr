@@ -1,4 +1,4 @@
-﻿import type { ToolId, Weather } from "../types";
+import type { CBRResult, ToolId, Weather } from "../types";
 
 export const tileSize = 32;
 export const mapWidth = 24;
@@ -38,3 +38,11 @@ export const actionLabels = {
   colher: "colher",
   esperar: "esperar",
 } as const;
+
+export const resultLabels: Record<CBRResult, string> = {
+  colheu: "colheu",
+  melhorou: "melhorou",
+  melhorou_parcialmente: "melhorou parcialmente",
+  sem_efeito: "sem efeito",
+  piorou: "piorou",
+};

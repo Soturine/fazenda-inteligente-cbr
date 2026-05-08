@@ -1,5 +1,13 @@
-﻿import { actionLabels, toolLabels, weatherLabels } from "../data/gameData";
-import type { CBRAnalysis, InventoryState, ToolId, Weather } from "../types";
+import { actionLabels, resultLabels, toolLabels, weatherLabels } from "../data/gameData";
+import type { CBRAnalysis, CBRResult, InventoryState, ToolId, Weather } from "../types";
+
+type MessageType = "info" | "success" | "warning" | "error" | "cbr";
+
+interface MessageOptions {
+  duration?: number;
+  persistent?: boolean;
+  type?: MessageType;
+}
 
 interface UIElements {
   day: HTMLElement;
@@ -31,6 +39,16 @@ interface UIActions {
   onSelectTool: (tool: ToolId) => void;
 }
 
+const defaultDurations: Record<MessageType, number> = {
+  info: 4500,
+  success: 5200,
+  warning: 5000,
+  error: 3800,
+  cbr: 8000,
+};
+
+const messageTypeClasses: MessageType[] = ["info", "success", "warning", "error", "cbr"];
+
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
   if (!element) {
@@ -42,6 +60,7 @@ function getElement<T extends HTMLElement>(id: string): T {
 export class UISystem {
   private readonly elements: UIElements;
   private messageTimeout = 0;
+  private messageClearTimeout = 0;
 
   constructor(actions: UIActions) {
     this.elements = {
@@ -74,6 +93,8 @@ export class UISystem {
     this.elements.toolButtons.querySelectorAll<HTMLButtonElement>("button[data-tool]").forEach((button) => {
       button.addEventListener("click", () => actions.onSelectTool(button.dataset.tool as ToolId));
     });
+
+    this.hideMessage(true);
   }
 
   sync(day: number, weather: Weather, inventory: InventoryState): void {
@@ -94,19 +115,39 @@ export class UISystem {
     this.elements.muteButton.classList.toggle("is-muted", muted);
   }
 
-  showMessage(message: string, persistent = false): void {
+  showInitialHint(): void {
+    this.showMessage("Use WASD ou setas para andar. Pressione E para usar a ferramenta e Q para consultar o Assistente CBR.", {
+      duration: 6000,
+      type: "info",
+    });
+  }
+
+  showMessage(message: string, options: MessageOptions = {}): void {
+    const type = options.type ?? "info";
+    const duration = options.duration ?? defaultDurations[type];
+
     this.clearMessageTimer();
+    this.clearMessageClasses();
+    this.elements.message.classList.add(`is-${type}`);
+    this.elements.message.classList.remove("is-hidden");
     this.elements.message.textContent = message;
-    this.messageTimeout = persistent ? 0 : window.setTimeout(() => {
-      this.elements.message.textContent = "WASD/setas movem. E usa ferramenta. Q consulta o Assistente CBR. N passa o dia.";
-      this.messageTimeout = 0;
-    }, 4500);
+
+    if (!options.persistent) {
+      this.messageTimeout = window.setTimeout(() => {
+        this.hideMessage();
+      }, duration);
+    }
   }
 
   clearMessageTimer(): void {
     if (this.messageTimeout) {
       window.clearTimeout(this.messageTimeout);
       this.messageTimeout = 0;
+    }
+
+    if (this.messageClearTimeout) {
+      window.clearTimeout(this.messageClearTimeout);
+      this.messageClearTimeout = 0;
     }
   }
 
@@ -140,10 +181,29 @@ export class UISystem {
     this.flashAssistantPanel();
   }
 
-  showRetain(learnedCount: number, result: string): void {
+  showRetain(learnedCount: number, result: CBRResult): void {
     this.elements.assistantCycle.textContent = `Retain: ${learnedCount} casos`;
-    this.elements.assistantText.textContent = `Nova experiência salva na memória CBR. Resultado registrado: ${result}. Vou usar isso nas próximas recomendações.`;
+    this.elements.assistantText.textContent = `Nova experiência salva na memória CBR. Resultado registrado: ${resultLabels[result]}. Vou usar isso nas próximas recomendações.`;
     this.flashAssistantPanel();
+  }
+
+  private hideMessage(immediate = false): void {
+    this.elements.message.classList.add("is-hidden");
+
+    if (immediate) {
+      this.elements.message.textContent = "";
+      return;
+    }
+
+    this.messageClearTimeout = window.setTimeout(() => {
+      if (this.elements.message.classList.contains("is-hidden")) {
+        this.elements.message.textContent = "";
+      }
+    }, 220);
+  }
+
+  private clearMessageClasses(): void {
+    messageTypeClasses.forEach((type) => this.elements.message.classList.remove(`is-${type}`));
   }
 
   private flashAssistantPanel(): void {
