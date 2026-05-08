@@ -1,4 +1,8 @@
-﻿import type { CropPlotState, CropVisualStage, Growth, Health, Moisture, PestLevel, Soil, Vector2Like } from "../types";
+﻿import type { CropPlotState, Vector2Like } from "../types";
+
+function plotVisualSeed(tile: Vector2Like): number {
+  return (tile.x * 928371 + tile.y * 364479 + 137) % 997;
+}
 
 export class CropPlot {
   static create(tile: Vector2Like): CropPlotState {
@@ -15,6 +19,14 @@ export class CropPlot {
       growth: "semente",
       health: "saudavel",
       daysDry: 0,
+      visualSeed: plotVisualSeed(tile),
+    };
+  }
+
+  static normalize(plot: CropPlotState): CropPlotState {
+    return {
+      ...plot,
+      visualSeed: plot.visualSeed ?? plotVisualSeed(plot),
     };
   }
 
@@ -26,19 +38,3 @@ export class CropPlot {
     return JSON.parse(JSON.stringify(plot)) as CropPlotState;
   }
 }
-
-export const cropStageOrder: CropVisualStage[] = ["seed", "sprout", "middle", "adult", "ready"];
-
-export const defaultCropValues: {
-  soil: Soil;
-  moisture: Moisture;
-  pests: PestLevel;
-  growth: Growth;
-  health: Health;
-} = {
-  soil: "normal",
-  moisture: "baixa",
-  pests: "nenhuma",
-  growth: "semente",
-  health: "saudavel",
-};

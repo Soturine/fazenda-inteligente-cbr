@@ -1,9 +1,21 @@
 # Changelog
 
+## [2.2.0] - 2026-05-08
+### Adicionado
+- Estados visuais para solo seco, normal, molhado, encharcado e adubado.
+- Partículas e efeitos para ferramentas.
+- Animações ambientais e feedback visual do CBR.
+- Sons simples de ações e botão mute.
+- Destaque visual no canteiro analisado pelo Assistente CBR.
+
+### Alterado
+- Melhorias gráficas no mapa, canteiros, plantas, HUD e assistente.
+- Versão do projeto atualizada para refletir o polimento visual e de game feel.
+
 ## [2.1.0] - 2026-05-08
 ### Adicionado
-- Repositório organizado para publicar a versão final em Phaser 3 pela branch main.
-- Workflow ajustado para deploy pela main.
+- Repositório organizado para publicar a versão final em Phaser 3 pela branch `main`.
+- Workflow ajustado para deploy pela `main`.
 - Migração do jogo para Vite, TypeScript e Phaser 3.
 - Arquitetura modular com Scenes, Systems, Entities, Data e UI.
 - Configuração de deploy automático no GitHub Pages.
@@ -34,4 +46,3 @@
 - Ciclo Retrieve, Reuse, Revise e Retain.
 - Persistência com LocalStorage.
 - Documentação do projeto.
-

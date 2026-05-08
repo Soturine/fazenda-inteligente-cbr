@@ -84,11 +84,38 @@ As ferramentas permitem preparar solo, plantar, regar, adubar, tratar pragas e c
 
 O jogo também possui sistema de dias e clima. Chuva ajuda a regar, clima seco reduz a umidade, clima nublado é neutro e sol pode secar o solo aos poucos.
 
+## Polimento visual e game feel
+
+A versão atual adiciona feedback visual direto para as ações do jogador e para o estado dos canteiros:
+
+- solo seco aparece mais claro, opaco e com pequenas rachaduras;
+- solo normal mantém o marrom comum dos canteiros;
+- solo molhado aparece mais escuro, com brilhos e pequenos pixels azulados;
+- solo encharcado fica ainda mais escuro e mostra poças sutis;
+- solo adubado recebe pontos verdes/amarelos e uma borda verde suave por alguns dias;
+- plantas com pragas mostram pequenos pontos escuros ou vermelhos se movendo;
+- plantas com problema ficam amareladas, murchas ou manchadas;
+- plantas prontas para colher exibem frutos amarelos e brilho discreto.
+
+As ferramentas também têm resposta visual e sonora:
+
+- enxada: poeira marrom e tremida visual no canteiro;
+- semente: brilho/amarelo caindo no solo;
+- regador: gotas azuis;
+- adubo: partículas verdes e amarelas;
+- controle de pragas: névoa esverdeada;
+- colheita: brilho, estrelas e moedas subindo;
+- próximo dia: transição rápida de escurecimento.
+
+Os sons são gerados por Web Audio API, sem arquivos externos ou áudio copiado de jogos comerciais. O botão "Som" permite ativar ou desativar o áudio, e a preferência fica salva no LocalStorage.
+
 ## Como o CBR aparece no gameplay
 
 O CBR é representado pelo Assistente CBR, um espantalho inteligente no mapa e em um painel compacto lateral. Quando o jogador fica perto de um canteiro e pressiona `Q`, o assistente analisa a situação agrícola daquele canteiro.
 
 O caso atual contém clima, solo, umidade, pragas, crescimento, saúde e estágio da planta. O assistente compara esse caso com a base de casos e recomenda ações como regar, adubar, tratar pragas, plantar, colher ou esperar.
+
+Ao pedir uma recomendação, o canteiro analisado recebe destaque amarelo, o assistente mostra uma animação de pensamento e o painel lateral resume o caso parecido, a similaridade, a ação recomendada e as etapas do ciclo CBR. Quando um novo caso é salvo, o painel indica que uma nova experiência entrou na memória.
 
 ## Ciclo CBR no jogo
 
@@ -149,10 +176,13 @@ O projeto foi organizado como um jogo modular em Vite + TypeScript + Phaser 3:
 │   │   ├── CBRSystem.ts
 │   │   ├── CropSystem.ts
 │   │   ├── DayNightSystem.ts
+│   │   ├── EffectSystem.ts
 │   │   ├── FarmMap.ts
 │   │   ├── InventorySystem.ts
 │   │   ├── PlayerSystem.ts
 │   │   ├── SaveSystem.ts
+│   │   ├── SoundSystem.ts
+│   │   ├── VisualStateSystem.ts
 │   │   └── WeatherSystem.ts
 │   ├── entities/
 │   │   ├── Assistant.ts
@@ -178,7 +208,7 @@ O projeto foi organizado como um jogo modular em Vite + TypeScript + Phaser 3:
 ## Responsabilidade dos módulos
 
 - `Scenes`: telas do jogo e integração com Phaser.
-- `Systems`: regras de gameplay, CBR, save, inventário, clima e dias.
+- `Systems`: regras de gameplay, CBR, save, inventário, clima, dias, efeitos, som e estados visuais.
 - `Entities`: jogador, canteiros e assistente visual.
 - `Data`: casos iniciais, labels, atalhos e constantes.
 - `UI`: HUD e painel compacto do Assistente CBR.
@@ -187,7 +217,7 @@ O projeto foi organizado como um jogo modular em Vite + TypeScript + Phaser 3:
 
 - Adicionar loja de sementes e upgrades de ferramentas.
 - Criar diferentes culturas com tempos de crescimento próprios.
-- Adicionar sons e música ambiente.
-- Implementar animações mais ricas para personagem e plantas.
+- Adicionar música ambiente autoral.
+- Implementar sprites autorais mais detalhados para personagem e plantas.
 - Criar metas semanais ou missões.
 - Exportar e importar a base de casos aprendidos.

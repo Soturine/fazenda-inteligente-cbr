@@ -2,6 +2,7 @@
 import type { ActionResult, CBRAction, CBRResult, CropPlotState, DaySummary, Moisture, PestLevel, ToolId, Vector2Like, Weather } from "../types";
 import { CropPlot } from "../entities/CropPlot";
 import { InventorySystem } from "./InventorySystem";
+import { VisualStateSystem } from "./VisualStateSystem";
 
 const toolActions: Record<ToolId, CBRAction> = {
   hoe: "preparar_solo",
@@ -16,7 +17,7 @@ export class CropSystem {
   private plots: Record<string, CropPlotState>;
 
   constructor(plantingTiles: Vector2Like[], savedPlots?: Record<string, CropPlotState>) {
-    this.plots = savedPlots ?? this.createPlots(plantingTiles);
+    this.plots = savedPlots ? this.normalizeSavedPlots(plantingTiles, savedPlots) : this.createPlots(plantingTiles);
   }
 
   get allPlots(): Record<string, CropPlotState> {
@@ -31,7 +32,7 @@ export class CropSystem {
     return this.plots[id] ?? null;
   }
 
-  applyTool(plot: CropPlotState | null, tool: ToolId, inventory: InventorySystem): ActionResult {
+  applyTool(plot: CropPlotState | null, tool: ToolId, inventory: InventorySystem, currentDay = 0): ActionResult {
     const action = toolActions[tool];
 
     if (!plot) {
@@ -47,6 +48,7 @@ export class CropSystem {
       plot.soil = "normal";
       plot.moisture = "media";
       plot.health = "saudavel";
+      plot.fertilizedUntilDay = undefined;
       return { ok: true, action, message: "Solo preparado. Agora plante uma semente." };
     }
 
@@ -90,6 +92,7 @@ export class CropSystem {
       }
 
       plot.soil = "normal";
+      plot.fertilizedUntilDay = currentDay + 3;
       if (plot.health === "amarelada") plot.health = "saudavel";
       this.recoverIfCared(plot);
       return { ok: true, action, message: "Adubo aplicado. O solo ficou mais nutritivo." };
@@ -161,9 +164,9 @@ export class CropSystem {
     return "piorou";
   }
 
-  render(graphics: Phaser.GameObjects.Graphics, tileSize: number): void {
+  render(graphics: Phaser.GameObjects.Graphics, tileSize: number, currentDay: number, time: number): void {
     graphics.clear();
-    Object.values(this.plots).forEach((plot) => this.drawPlot(graphics, plot, tileSize));
+    Object.values(this.plots).forEach((plot) => VisualStateSystem.drawPlot(graphics, plot, tileSize, currentDay, time));
   }
 
   serialize(): Record<string, CropPlotState> {
@@ -172,6 +175,16 @@ export class CropSystem {
 
   private createPlots(plantingTiles: Vector2Like[]): Record<string, CropPlotState> {
     return Object.fromEntries(plantingTiles.map((tile) => [`${tile.x},${tile.y}`, CropPlot.create(tile)]));
+  }
+
+  private normalizeSavedPlots(plantingTiles: Vector2Like[], savedPlots: Record<string, CropPlotState>): Record<string, CropPlotState> {
+    const plots = this.createPlots(plantingTiles);
+
+    Object.entries(savedPlots).forEach(([id, plot]) => {
+      plots[id] = CropPlot.normalize(plot);
+    });
+
+    return plots;
   }
 
   private applyWeather(plot: CropPlotState, weather: Weather): void {
@@ -273,74 +286,4 @@ export class CropSystem {
     return stageScore + moistureScore + soilScore + pestScore + healthScore;
   }
 
-  private drawPlot(graphics: Phaser.GameObjects.Graphics, plot: CropPlotState, tileSize: number): void {
-    const px = plot.x * tileSize;
-    const py = plot.y * tileSize;
-    const cx = px + tileSize / 2;
-    const cy = py + tileSize / 2;
-
-    if (plot.stage === "empty") return;
-
-    if (plot.stage === "prepared") {
-      graphics.fillStyle(0xfff7dc, 0.25);
-      graphics.fillRect(px + 7, py + 7, tileSize - 14, 3);
-      graphics.fillRect(px + 7, py + 17, tileSize - 14, 3);
-      return;
-    }
-
-    if (plot.stage === "seed") {
-      graphics.fillStyle(0xf4cc58, 1);
-      graphics.fillRect(cx - 3, cy - 2, 6, 5);
-      return;
-    }
-
-    if (plot.stage === "sprout") {
-      graphics.fillStyle(0x2f7c3b, 1);
-      graphics.fillRect(cx - 2, cy - 8, 4, 14);
-      graphics.fillRect(cx - 9, cy - 5, 8, 5);
-      graphics.fillRect(cx + 1, cy - 4, 8, 5);
-      return;
-    }
-
-    if (plot.stage === "middle") {
-      graphics.fillStyle(0x2f7c3b, 1);
-      graphics.fillRect(cx - 3, cy - 14, 6, 22);
-      graphics.fillStyle(0x55a64c, 1);
-      graphics.fillRect(cx - 13, cy - 10, 12, 7);
-      graphics.fillRect(cx + 1, cy - 7, 12, 7);
-      graphics.fillRect(cx - 9, cy + 1, 18, 6);
-      return;
-    }
-
-    if (plot.stage === "adult") {
-      graphics.fillStyle(0x2f7c3b, 1);
-      graphics.fillRect(cx - 4, cy - 18, 8, 28);
-      graphics.fillStyle(0x61b85a, 1);
-      graphics.fillRect(cx - 15, cy - 13, 13, 8);
-      graphics.fillRect(cx + 2, cy - 13, 13, 8);
-      graphics.fillStyle(0xf4cc58, 1);
-      graphics.fillRect(cx - 5, cy - 18, 10, 11);
-      return;
-    }
-
-    if (plot.stage === "problem") {
-      graphics.fillStyle(plot.health === "amarelada" ? 0xd8c755 : 0x7ca753, 1);
-      graphics.fillRect(cx - 3, cy - 11, 6, 20);
-      graphics.fillRect(cx - 14, cy - 5, 12, 6);
-      graphics.fillRect(cx + 2, cy - 3, 12, 6);
-      graphics.fillStyle(0x9d4030, 1);
-      graphics.fillRect(cx - 9, cy - 10, 4, 4);
-      graphics.fillRect(cx + 7, cy - 2, 4, 4);
-      return;
-    }
-
-    if (plot.stage === "ready") {
-      graphics.fillStyle(0x2f7c3b, 1);
-      graphics.fillRect(cx - 4, cy - 18, 8, 28);
-      graphics.fillStyle(0xffd45a, 1);
-      graphics.fillRect(cx - 11, cy - 16, 8, 18);
-      graphics.fillRect(cx + 3, cy - 16, 8, 18);
-      graphics.fillRect(cx - 4, cy - 21, 8, 18);
-    }
-  }
 }

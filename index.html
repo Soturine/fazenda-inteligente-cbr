@@ -18,12 +18,12 @@
         </div>
 
         <div class="hud-grid">
-          <div class="hud-chip"><span>Dia</span><strong id="hud-day">1</strong></div>
-          <div class="hud-chip"><span>Clima</span><strong id="hud-weather">ensolarado</strong></div>
-          <div class="hud-chip"><span>Moedas</span><strong id="hud-coins">0</strong></div>
-          <div class="hud-chip"><span>Sementes</span><strong id="hud-seeds">10</strong></div>
-          <div class="hud-chip"><span>Colheitas</span><strong id="hud-harvests">0</strong></div>
-          <div class="hud-chip tool-chip"><span>Ferramenta</span><strong id="hud-tool">enxada</strong></div>
+          <div class="hud-chip"><span>Dia</span><strong><i>☀</i><b id="hud-day">1</b></strong></div>
+          <div class="hud-chip"><span>Clima</span><strong><i>☁</i><b id="hud-weather">ensolarado</b></strong></div>
+          <div class="hud-chip"><span>Moedas</span><strong><i>¤</i><b id="hud-coins">0</b></strong></div>
+          <div class="hud-chip"><span>Sementes</span><strong><i>•</i><b id="hud-seeds">10</b></strong></div>
+          <div class="hud-chip"><span>Colheitas</span><strong><i>▣</i><b id="hud-harvests">0</b></strong></div>
+          <div class="hud-chip tool-chip"><span>Ferramenta</span><strong><i>◆</i><b id="hud-tool">enxada</b></strong></div>
         </div>
       </header>
 
@@ -34,7 +34,7 @@
         </section>
 
         <aside class="side-stack" aria-label="Painéis de jogo">
-          <section class="assistant-panel">
+          <section id="assistant-panel" class="assistant-panel">
             <div class="panel-title">
               <div>
                 <p>Assistente CBR</p>
@@ -64,6 +64,7 @@
 
           <section class="actions-panel">
             <button id="next-day" class="primary-button" type="button">Dormir / Próximo dia <kbd>N</kbd></button>
+            <button id="mute-audio" type="button">Som: ligado</button>
             <button id="save-game" type="button">Salvar jogo</button>
             <button id="reset-game" class="danger-button" type="button">Resetar progresso</button>
           </section>

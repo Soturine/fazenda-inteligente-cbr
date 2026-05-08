@@ -37,6 +37,8 @@ export interface CropPlotState {
   growth: Growth;
   health: Health;
   daysDry: number;
+  visualSeed: number;
+  fertilizedUntilDay?: number;
 }
 
 export interface CBRCase {
