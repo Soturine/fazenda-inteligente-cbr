@@ -9,6 +9,8 @@ export interface PlayerActions {
   onAskAssistant: () => void;
   onNextDay: () => void;
   onSelectTool: (tool: ToolId) => void;
+  onCycleCrop: () => void;
+  onPause: () => void;
 }
 
 export class PlayerSystem {
@@ -33,12 +35,15 @@ export class PlayerSystem {
       space: "SPACE",
       ask: "Q",
       nextDay: "N",
+      cycleCrop: "TAB",
+      pause: "ESC",
       one: "ONE",
       two: "TWO",
       three: "THREE",
       four: "FOUR",
       five: "FIVE",
       six: "SIX",
+      seven: "SEVEN",
     }) as Record<string, Phaser.Input.Keyboard.Key>;
   }
 
@@ -120,6 +125,14 @@ export class PlayerSystem {
       this.actions.onNextDay();
     }
 
+    if (Phaser.Input.Keyboard.JustDown(this.keys.cycleCrop)) {
+      this.actions.onCycleCrop();
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.keys.pause)) {
+      this.actions.onPause();
+    }
+
     const keyPairs: Array<[string, string]> = [
       ["one", "1"],
       ["two", "2"],
@@ -127,6 +140,7 @@ export class PlayerSystem {
       ["four", "4"],
       ["five", "5"],
       ["six", "6"],
+      ["seven", "7"],
     ];
 
     keyPairs.forEach(([keyName, hotkey]) => {

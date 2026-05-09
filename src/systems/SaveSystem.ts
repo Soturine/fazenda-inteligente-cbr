@@ -1,4 +1,4 @@
-﻿import type { CBRCase, GameSaveState } from "../types";
+import type { CBRCase, GameSaveState } from "../types";
 
 const saveKey = "fazendinha-cbr-save-vite";
 const casesKey = "fazendinha-cbr-cases-vite";
@@ -26,12 +26,20 @@ export class SaveSystem {
   static readonly saveKey = saveKey;
   static readonly casesKey = casesKey;
 
+  static hasGame(): boolean {
+    return localStorage.getItem(saveKey) !== null;
+  }
+
   static loadGame(): GameSaveState | null {
     return readJson<GameSaveState | null>(saveKey, null);
   }
 
   static saveGame(state: GameSaveState): void {
     writeJson(saveKey, state);
+  }
+
+  static clearGame(): void {
+    localStorage.removeItem(saveKey);
   }
 
   static loadLearnedCases(): CBRCase[] {

@@ -1,6 +1,11 @@
-﻿export type Weather = "ensolarado" | "chuvoso" | "seco" | "nublado";
-export type TileType = "grass" | "path" | "plot" | "house" | "tree" | "fence";
-export type ToolId = "hoe" | "seed" | "water" | "fertilizer" | "pesticide" | "harvest";
+export type Weather = "ensolarado" | "chuvoso" | "seco" | "nublado";
+export type TileType = "grass" | "path" | "plot" | "house" | "tree" | "fence" | "water" | "shop" | "sellBox";
+export type ToolId = "hoe" | "seed" | "water" | "fertilizer" | "pesticide" | "harvest" | "fishingRod";
+export type CropType = "carrot" | "corn" | "tomato" | "strawberry";
+export type CropCaseType = CropType | "nenhuma";
+export type FishTypeId = "lambari" | "tilapia" | "carpa" | "dourado";
+export type MarketItemId = CropType | FishTypeId;
+export type MarketTrend = "up" | "down" | "stable";
 export type CBRAction = "preparar_solo" | "plantar" | "regar" | "adubar" | "tratar_pragas" | "colher" | "esperar";
 export type Soil = "normal" | "seco" | "encharcado" | "pobre";
 export type Moisture = "baixa" | "media" | "alta";
@@ -17,11 +22,51 @@ export interface Vector2Like {
   y: number;
 }
 
+export interface CropTypeDefinition {
+  id: CropType;
+  name: string;
+  icon: string;
+  seedPrice: number;
+  sellPrice: number;
+  growthDays: number;
+  color: number;
+  accentColor: number;
+  droughtResistance: number;
+  pestResistance: number;
+  preferredWeather: Weather[];
+  rarity: "comum" | "incomum" | "rara";
+  initialSeeds: number;
+  description: string;
+}
+
+export interface FishTypeDefinition {
+  id: FishTypeId;
+  name: string;
+  icon: string;
+  basePrice: number;
+  rarity: "comum" | "incomum" | "raro";
+  preferredWeather: Weather[];
+  difficulty: number;
+}
+
 export interface InventoryState {
   seeds: number;
+  seedStock: Record<CropType, number>;
+  selectedCrop: CropType;
   harvests: number;
+  harvestStock: Record<CropType, number>;
+  fishStock: Record<FishTypeId, number>;
   coins: number;
   currentTool: ToolId;
+}
+
+export interface EconomyState {
+  prices: Record<MarketItemId, number>;
+  trends: Record<MarketItemId, MarketTrend>;
+  soldToday: Record<MarketItemId, number>;
+  shopSeedStock: Record<CropType, number>;
+  lastUpdatedDay: number;
+  eventText: string;
 }
 
 export interface CropPlotState {
@@ -38,6 +83,7 @@ export interface CropPlotState {
   health: Health;
   daysDry: number;
   visualSeed: number;
+  cropType?: CropType;
   fertilizedUntilDay?: number;
 }
 
@@ -50,6 +96,7 @@ export interface CBRCase {
   crescimento: Growth;
   saude: Health;
   estagioPlanta: PlantStage;
+  tipoCultura: CropCaseType;
   acaoAplicada: CBRAction;
   resultado: CBRResult;
   explicacao: string;
@@ -82,6 +129,14 @@ export interface PendingLearningCase {
   actionImmediateResult?: CBRResult;
 }
 
+export interface CharacterCustomization {
+  farmerName: string;
+  skinColor: string;
+  hairColor: string;
+  outfitColor: string;
+  style: "A" | "B" | "C";
+}
+
 export interface PlayerSaveState {
   x: number;
   y: number;
@@ -96,6 +151,8 @@ export interface GameSaveState {
   player: PlayerSaveState;
   crops: Record<string, CropPlotState>;
   pendingCases: PendingLearningCase[];
+  economy?: EconomyState;
+  customization?: CharacterCustomization;
 }
 
 export interface ActionResult {
@@ -110,4 +167,12 @@ export interface DaySummary {
   problems: number;
   retained: number;
   lastResult?: CBRResult;
+}
+
+export interface FishingOutcome {
+  ok: boolean;
+  message: string;
+  fishId?: FishTypeId;
+  value?: number;
+  rarity?: string;
 }

@@ -7,6 +7,54 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
+    <div id="sky-layer" class="sky-layer" aria-hidden="true">
+      <span class="sun-disk"></span>
+      <span class="cloud cloud-a"></span>
+      <span class="cloud cloud-b"></span>
+      <span class="cloud cloud-c"></span>
+    </div>
+
+    <section id="main-menu" class="main-menu" aria-label="Menu principal">
+      <div class="menu-card">
+        <div class="menu-title">
+          <span class="brand-badge">CBR</span>
+          <div>
+            <p>Fazendinha CBR</p>
+            <strong>Farming game com assistente inteligente</strong>
+          </div>
+        </div>
+        <div class="menu-actions">
+          <button id="menu-play" class="primary-button" type="button">Jogar</button>
+          <button id="menu-continue" type="button">Continuar</button>
+          <button id="menu-how" type="button">Como jogar</button>
+          <button id="menu-fullscreen" type="button">Tela cheia</button>
+          <button id="menu-reset" class="danger-button" type="button">Resetar progresso</button>
+        </div>
+        <div class="custom-card">
+          <h2>Seu fazendeiro</h2>
+          <label>Nome <input id="custom-name" maxlength="20" value="Fazendeiro CBR" /></label>
+          <div class="custom-grid">
+            <label>Pele <input id="custom-skin" type="color" value="#f1b77a" /></label>
+            <label>Cabelo <input id="custom-hair" type="color" value="#7a4a24" /></label>
+            <label>Roupa <input id="custom-outfit" type="color" value="#4d6fb3" /></label>
+            <label>Estilo
+              <select id="custom-style">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
+            </label>
+          </div>
+          <div id="custom-preview" class="custom-preview" aria-hidden="true">
+            <span class="preview-hair"></span>
+            <span class="preview-head"></span>
+            <span class="preview-body"></span>
+          </div>
+        </div>
+        <p id="menu-help" class="menu-help is-hidden">Ande com WASD/setas, use E nos objetos, TAB troca sementes, Q chama o Assistente CBR. Clique em canteiros para usar a ferramenta.</p>
+      </div>
+    </section>
+
     <div id="app-shell" class="app-shell">
       <header class="game-hud" aria-label="HUD do jogo">
         <div class="brand-block">
@@ -22,6 +70,8 @@
           <div class="hud-chip"><span>Clima</span><strong><i>☁</i><b id="hud-weather">ensolarado</b></strong></div>
           <div class="hud-chip"><span>Moedas</span><strong><i>¤</i><b id="hud-coins">0</b></strong></div>
           <div class="hud-chip"><span>Sementes</span><strong><i>•</i><b id="hud-seeds">10</b></strong></div>
+          <div class="hud-chip"><span>Semente atual</span><strong><i id="hud-crop-icon">C</i><b id="hud-selected-crop">cenoura</b></strong></div>
+          <div class="hud-chip"><span>Peixes</span><strong><i>≈</i><b id="hud-fish">0</b></strong></div>
           <div class="hud-chip"><span>Colheitas</span><strong><i>▣</i><b id="hud-harvests">0</b></strong></div>
           <div class="hud-chip tool-chip"><span>Ferramenta</span><strong><i>◆</i><b id="hud-tool">enxada</b></strong></div>
         </div>
@@ -59,7 +109,13 @@
               <button type="button" data-tool="fertilizer"><kbd>4</kbd><span>Adubo</span></button>
               <button type="button" data-tool="pesticide"><kbd>5</kbd><span>Pragas</span></button>
               <button type="button" data-tool="harvest"><kbd>6</kbd><span>Colher</span></button>
+              <button type="button" data-tool="fishingRod"><kbd>7</kbd><span>Pescar</span></button>
             </div>
+          </section>
+
+          <section class="seeds-panel">
+            <h2>Sementes <kbd>TAB</kbd></h2>
+            <div id="seed-buttons" class="seed-buttons"></div>
           </section>
 
           <section class="actions-panel">
@@ -74,10 +130,43 @@
             <p><kbd>WASD</kbd> ou <kbd>setas</kbd> mover</p>
             <p><kbd>E</kbd> ou <kbd>Espaço</kbd> usar ferramenta</p>
             <p><kbd>Q</kbd> consultar CBR</p>
-            <p><kbd>1-6</kbd> trocar ferramenta</p>
+            <p><kbd>TAB</kbd> trocar semente</p>
+            <p><kbd>1-7</kbd> trocar ferramenta</p>
           </section>
         </aside>
       </main>
+
+      <section id="shop-modal" class="game-modal is-hidden" aria-label="Loja">
+        <div class="modal-card">
+          <button id="shop-close" class="modal-close" type="button">x</button>
+          <h2>Loja da Vila</h2>
+          <p id="market-event">Mercado local estável.</p>
+          <h3>Comprar sementes</h3>
+          <div id="shop-seeds" class="shop-grid"></div>
+          <h3>Vender colheitas</h3>
+          <div id="shop-harvests" class="shop-grid"></div>
+          <h3>Vender peixes</h3>
+          <div id="shop-fish" class="shop-grid"></div>
+        </div>
+      </section>
+
+      <section id="house-modal" class="game-modal is-hidden" aria-label="Casa">
+        <div class="modal-card house-card">
+          <button id="house-close" class="modal-close" type="button">x</button>
+          <h2>Casa</h2>
+          <p>Uma cama quentinha, um calendário e um baú simples. Dormir salva o jogo e avança o dia.</p>
+          <button id="house-sleep" class="primary-button" type="button">Dormir e avançar o dia</button>
+        </div>
+      </section>
+
+      <section id="pause-modal" class="game-modal is-hidden" aria-label="Pausa">
+        <div class="modal-card pause-card">
+          <button id="pause-close" class="modal-close" type="button">x</button>
+          <h2>Pausado</h2>
+          <button id="pause-fullscreen" type="button">Tela cheia</button>
+          <button id="pause-save" type="button">Salvar jogo</button>
+        </div>
+      </section>
 
       <section class="learn-panel">
         <details>

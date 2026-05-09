@@ -7,6 +7,8 @@ export type GameSound =
   | "pesticide"
   | "harvest"
   | "coin"
+  | "click"
+  | "fish"
   | "error"
   | "nextDay"
   | "cbr";
@@ -84,6 +86,19 @@ export class SoundSystem {
     if (sound === "coin") {
       this.tone(960, 0.06, "triangle", 0.04);
       this.tone(1280, 0.08, "triangle", 0.035, 0.055);
+      return;
+    }
+
+    if (sound === "click") {
+      this.tone(440, 0.035, "square", 0.025);
+      this.tone(620, 0.04, "triangle", 0.022, 0.025);
+      return;
+    }
+
+    if (sound === "fish") {
+      this.noise(0.1, 0.035, 980);
+      this.tone(260, 0.08, "sine", 0.025);
+      this.tone(520, 0.08, "triangle", 0.026, 0.07);
       return;
     }
 

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { cropTypes } from "../data/cropTypes";
 import type { CropPlotState, Health, Moisture, Soil } from "../types";
 
 const moistureColors: Record<Moisture, number> = {
@@ -185,19 +186,22 @@ export class VisualStateSystem {
   }
 
   private static drawSeed(graphics: Phaser.GameObjects.Graphics, plot: CropPlotState, cx: number, cy: number, time: number): void {
+    const crop = cropTypes[plot.cropType ?? "carrot"];
     graphics.fillStyle(0x543019, 0.32);
     graphics.fillEllipse(cx, cy + 3, 12, 5);
-    graphics.fillStyle(0xf4cc58, 1);
+    graphics.fillStyle(crop.color, 1);
     graphics.fillEllipse(cx, cy + wave(time, plot.visualSeed, 0.8), 7, 5);
     graphics.fillStyle(0xfff7c7, 0.65);
     graphics.fillRect(cx - 1, cy - 2, 2, 1);
   }
 
   private static drawPlant(graphics: Phaser.GameObjects.Graphics, plot: CropPlotState, cx: number, cy: number, stage: 0 | 1 | 2, time: number, forcedProblem = false): void {
+    const crop = cropTypes[plot.cropType ?? "carrot"];
     const sway = wave(time, plot.visualSeed, stage + 0.8);
-    const color = forcedProblem ? healthColors[plot.health] : 0x38a64c + variant(plot.visualSeed, 3, 0x1010);
+    const color = forcedProblem ? healthColors[plot.health] : crop.accentColor;
     const dark = forcedProblem ? 0x5d763f : 0x237a36;
-    const stemHeight = [13, 21, 28][stage];
+    const cropHeightBonus = plot.cropType === "corn" ? 8 : plot.cropType === "strawberry" ? -5 : 0;
+    const stemHeight = [13, 21, 28][stage] + cropHeightBonus;
     const stemWidth = [4, 5, 7][stage];
     const lean = plot.health === "murcha" || forcedProblem ? 4 : 0;
 
@@ -212,6 +216,32 @@ export class VisualStateSystem {
       const side = i % 2 === 0 ? -1 : 1;
       graphics.fillEllipse(cx + sway + side * (5 + stage * 2) + lean, leafY, leafW, 6);
       graphics.fillEllipse(cx + sway - side * (5 + stage * 2) + lean / 2, leafY + 2, leafW - 1, 6);
+    }
+
+    if (plot.cropType === "corn" && stage >= 1) {
+      graphics.fillStyle(0xf4cc58, 1);
+      graphics.fillRect(cx + 5 + sway, cy - 14, 5, 13);
+      graphics.fillStyle(0x3f9a49, 1);
+      graphics.fillRect(cx + 2 + sway, cy - 9, 10, 3);
+    }
+
+    if (plot.cropType === "tomato" && stage >= 1) {
+      graphics.fillStyle(0xd94b3d, 1);
+      graphics.fillCircle(cx - 8 + sway, cy - 8, 3);
+      graphics.fillCircle(cx + 9 + sway, cy - 4, 3);
+    }
+
+    if (plot.cropType === "strawberry" && stage >= 1) {
+      graphics.fillStyle(0xe85b75, 1);
+      graphics.fillCircle(cx - 6 + sway, cy - 3, 3);
+      graphics.fillCircle(cx + 5 + sway, cy - 6, 3);
+      graphics.fillStyle(0xfff7dc, 0.8);
+      graphics.fillRect(cx - 7 + sway, cy - 4, 1, 1);
+    }
+
+    if (plot.cropType === "carrot" && stage >= 2) {
+      graphics.fillStyle(0xf28b38, 1);
+      graphics.fillTriangle(cx - 5 + sway, cy + 2, cx + 5 + sway, cy + 2, cx + sway, cy + 13);
     }
 
     if (plot.health === "com_manchas" || plot.pests === "media" || plot.pests === "alta") {
@@ -242,13 +272,34 @@ export class VisualStateSystem {
   }
 
   private static drawReadyFruit(graphics: Phaser.GameObjects.Graphics, plot: CropPlotState, cx: number, cy: number, time: number): void {
+    const crop = cropTypes[plot.cropType ?? "carrot"];
     const glow = 0.26 + Math.sin(time / 260 + plot.visualSeed) * 0.08;
     graphics.fillStyle(0xfff0a2, glow);
     graphics.fillCircle(cx, cy - 16, 15);
-    graphics.fillStyle(0xf4cc58, 1);
-    graphics.fillEllipse(cx - 7, cy - 13, 7, 10);
-    graphics.fillEllipse(cx + 7, cy - 13, 7, 10);
-    graphics.fillEllipse(cx, cy - 19, 8, 10);
+
+    if (plot.cropType === "carrot") {
+      graphics.fillStyle(0xf28b38, 1);
+      graphics.fillTriangle(cx - 9, cy - 4, cx - 2, cy - 4, cx - 6, cy + 12);
+      graphics.fillTriangle(cx + 2, cy - 5, cx + 9, cy - 5, cx + 5, cy + 12);
+    } else if (plot.cropType === "tomato") {
+      graphics.fillStyle(0xd94b3d, 1);
+      graphics.fillCircle(cx - 8, cy - 12, 5);
+      graphics.fillCircle(cx + 8, cy - 10, 5);
+      graphics.fillCircle(cx, cy - 18, 5);
+    } else if (plot.cropType === "strawberry") {
+      graphics.fillStyle(0xe85b75, 1);
+      graphics.fillTriangle(cx - 10, cy - 18, cx - 2, cy - 18, cx - 6, cy - 7);
+      graphics.fillTriangle(cx + 2, cy - 17, cx + 10, cy - 17, cx + 6, cy - 6);
+      graphics.fillStyle(0xfff7dc, 0.85);
+      graphics.fillRect(cx - 7, cy - 14, 1, 1);
+      graphics.fillRect(cx + 5, cy - 13, 1, 1);
+    } else {
+      graphics.fillStyle(0xf4cc58, 1);
+      graphics.fillRect(cx - 10, cy - 17, 7, 18);
+      graphics.fillRect(cx + 3, cy - 17, 7, 18);
+      graphics.fillRect(cx - 3, cy - 22, 6, 18);
+    }
+
     graphics.fillStyle(0xfff7dc, 0.72);
     graphics.fillRect(cx - 1, cy - 22, 2, 3);
   }

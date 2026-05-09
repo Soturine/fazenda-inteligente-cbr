@@ -6,11 +6,11 @@
 
 ## 2. A ideia do jogo
 
-"Fazendinha CBR é um jogo top-down feito com Vite, TypeScript e Phaser 3. O jogador anda pela fazenda, cuida de canteiros, planta sementes, rega, aduba, trata pragas e colhe alimentos."
+"Fazendinha CBR é um jogo top-down feito com Vite, TypeScript e Phaser 3. O jogador anda por uma fazenda maior, cuida de canteiros, compra sementes, vende colheitas, pesca no lago e dorme na casa para avançar o dia."
 
 ## 3. O que o jogador faz
 
-"O jogador começa com 10 sementes e 0 moedas. Para produzir, ele precisa preparar o solo, plantar, cuidar da umidade, controlar pragas e colher quando a planta estiver pronta."
+"O jogador alterna entre culturas como cenoura, milho, tomate e morango. Para produzir, ele precisa preparar o solo, plantar, cuidar da umidade, controlar pragas, colher quando a planta estiver pronta e vender os itens na loja."
 
 ## 4. Onde está a IA
 
@@ -18,11 +18,11 @@
 
 ## 5. Como o CBR funciona no jogo
 
-"Quando pedimos uma recomendação, o sistema monta o caso atual com clima, solo, umidade, pragas, crescimento, saúde e estágio da planta. Depois compara esse caso com uma base de experiências anteriores."
+"Quando pedimos uma recomendação, o sistema monta o caso atual com clima, solo, umidade, pragas, crescimento, saúde, estágio da planta e tipo de cultura. Depois compara esse caso com uma base de experiências anteriores."
 
 ## 6. Demonstração prática
 
-"Vamos aproximar o personagem de um canteiro com problema. Ao pressionar Q, o assistente recupera um caso parecido, mostra a similaridade e recomenda uma ação. Se o solo estiver seco, por exemplo, ele tende a recomendar regar."
+"Vamos aproximar o personagem de um canteiro com problema. Ao pressionar Q, o assistente recupera um caso parecido, mostra a similaridade e recomenda uma ação. Se for tomate com pragas, ele tende a recomendar tratar pragas; se o solo estiver seco, tende a recomendar regar."
 
 ## 7. Retrieve, Reuse, Revise e Retain
 
@@ -39,3 +39,4 @@
 ## 10. Conclusão
 
 "O projeto mostra IA simbólica baseada em conhecimento. Não há machine learning complexo. A inteligência vem da comparação entre casos, do reaproveitamento de soluções e das regras de adaptação."
+"A parte visual deixa o trabalho com cara de jogo web casual, mas o núcleo acadêmico continua sendo o ciclo Retrieve, Reuse, Revise e Retain."

@@ -27,6 +27,7 @@ export class CropPlot {
     return {
       ...plot,
       visualSeed: plot.visualSeed ?? plotVisualSeed(plot),
+      cropType: plot.cropType,
     };
   }
 

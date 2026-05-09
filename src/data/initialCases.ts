@@ -1,4 +1,4 @@
-﻿import type { CBRCase } from "../types";
+import type { CBRCase } from "../types";
 
 export const initialCases: CBRCase[] = [
   {
@@ -10,9 +10,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "broto",
     saude: "murcha",
     estagioPlanta: "crescendo",
+    tipoCultura: "carrot",
     acaoAplicada: "regar",
     resultado: "melhorou",
-    explicacao: "Planta murcha em solo seco melhorou depois de receber água.",
+    explicacao: "Cenoura murcha em solo seco melhorou depois de receber água.",
   },
   {
     id: "base-002",
@@ -23,9 +24,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "semente",
     saude: "saudavel",
     estagioPlanta: "preparado",
+    tipoCultura: "corn",
     acaoAplicada: "plantar",
     resultado: "melhorou",
-    explicacao: "Solo preparado e saudável era adequado para receber uma semente.",
+    explicacao: "Milho gosta de sol e solo preparado era adequado para o plantio.",
   },
   {
     id: "base-003",
@@ -36,9 +38,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "medio",
     saude: "amarelada",
     estagioPlanta: "crescendo",
+    tipoCultura: "strawberry",
     acaoAplicada: "adubar",
     resultado: "melhorou",
-    explicacao: "Folhas amareladas em solo pobre indicaram falta de nutrientes.",
+    explicacao: "Morango amarelado em solo pobre indicou falta de nutrientes.",
   },
   {
     id: "base-004",
@@ -49,9 +52,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "adulto",
     saude: "com_manchas",
     estagioPlanta: "crescendo",
+    tipoCultura: "tomato",
     acaoAplicada: "tratar_pragas",
     resultado: "melhorou",
-    explicacao: "Pragas altas e manchas foram tratadas com controle de pragas.",
+    explicacao: "Tomate é sensível a pragas; tratar pragas foi prioridade.",
   },
   {
     id: "base-005",
@@ -62,6 +66,7 @@ export const initialCases: CBRCase[] = [
     crescimento: "broto",
     saude: "saudavel",
     estagioPlanta: "crescendo",
+    tipoCultura: "strawberry",
     acaoAplicada: "esperar",
     resultado: "melhorou_parcialmente",
     explicacao: "Com solo encharcado, esperar foi melhor do que regar novamente.",
@@ -75,9 +80,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "adulto",
     saude: "saudavel",
     estagioPlanta: "pronto",
+    tipoCultura: "corn",
     acaoAplicada: "colher",
     resultado: "colheu",
-    explicacao: "A planta adulta pronta foi colhida com sucesso.",
+    explicacao: "Milho adulto pronto foi colhido com sucesso.",
   },
   {
     id: "base-007",
@@ -88,9 +94,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "medio",
     saude: "com_manchas",
     estagioPlanta: "crescendo",
+    tipoCultura: "tomato",
     acaoAplicada: "tratar_pragas",
     resultado: "melhorou_parcialmente",
-    explicacao: "O controle de pragas ajudou, mas a baixa umidade ainda exigia atenção.",
+    explicacao: "Controle de pragas ajudou o tomate, mas baixa umidade ainda exigia atenção.",
   },
   {
     id: "base-008",
@@ -101,6 +108,7 @@ export const initialCases: CBRCase[] = [
     crescimento: "semente",
     saude: "saudavel",
     estagioPlanta: "vazio",
+    tipoCultura: "nenhuma",
     acaoAplicada: "preparar_solo",
     resultado: "melhorou",
     explicacao: "Um canteiro vazio precisou ser preparado antes do plantio.",
@@ -114,9 +122,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "medio",
     saude: "saudavel",
     estagioPlanta: "crescendo",
+    tipoCultura: "strawberry",
     acaoAplicada: "esperar",
     resultado: "melhorou_parcialmente",
-    explicacao: "A chuva já cuidava da umidade, então esperar foi suficiente.",
+    explicacao: "A chuva já cuidava da umidade do morango, então esperar foi suficiente.",
   },
   {
     id: "base-010",
@@ -127,9 +136,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "broto",
     saude: "amarelada",
     estagioPlanta: "crescendo",
+    tipoCultura: "carrot",
     acaoAplicada: "adubar",
     resultado: "melhorou_parcialmente",
-    explicacao: "Adubar ajudou o solo pobre, mas a seca ainda pedia rega.",
+    explicacao: "Adubar ajudou a cenoura em solo pobre, mas a seca ainda pedia rega.",
   },
   {
     id: "base-011",
@@ -140,9 +150,10 @@ export const initialCases: CBRCase[] = [
     crescimento: "adulto",
     saude: "com_manchas",
     estagioPlanta: "crescendo",
+    tipoCultura: "tomato",
     acaoAplicada: "tratar_pragas",
     resultado: "melhorou",
-    explicacao: "Mesmo com solo seco, pragas altas eram o risco mais urgente.",
+    explicacao: "Mesmo com solo seco, pragas altas no tomate eram o risco mais urgente.",
   },
   {
     id: "base-012",
@@ -153,8 +164,9 @@ export const initialCases: CBRCase[] = [
     crescimento: "semente",
     saude: "saudavel",
     estagioPlanta: "plantado",
+    tipoCultura: "corn",
     acaoAplicada: "regar",
     resultado: "melhorou_parcialmente",
-    explicacao: "A semente plantada recebeu água para começar o crescimento.",
+    explicacao: "A semente de milho recebeu água para começar o crescimento.",
   },
 ];

@@ -107,6 +107,7 @@ export class EffectSystem {
     if (tool === "fertilizer") this.playFertilizer(tile);
     if (tool === "pesticide") this.playPesticide(tile);
     if (tool === "harvest") this.playHarvest(tile);
+    if (tool === "fishingRod") this.playFishingCast(tile, false);
   }
 
   highlightTile(tile: Vector2Like, color = 0xffe066, duration = 900): void {
@@ -194,6 +195,22 @@ export class EffectSystem {
       hold: 160,
       onComplete: () => cover.destroy(),
     });
+  }
+
+  playFishingCast(tile: Vector2Like, success: boolean): void {
+    const { x, y } = this.tileCenter(tile);
+    const line = this.scene.add.line(0, 0, x - 18, y - 18, x + 14, y + 10, 0xfff7dc, 0.9).setOrigin(0).setDepth(depth.uiWorld);
+    this.scene.tweens.add({
+      targets: line,
+      alpha: 0,
+      duration: 900,
+      onComplete: () => line.destroy(),
+    });
+
+    const splashColor = success ? 0xf4cc58 : 0x9edfff;
+    for (let i = 0; i < 8; i += 1) {
+      this.spawnParticle(x + 14, y + 10, splashColor, Phaser.Math.Between(-18, 18), Phaser.Math.Between(-18, 6), 700, 4, 0.75);
+    }
   }
 
   private playHoe(tile: Vector2Like): void {

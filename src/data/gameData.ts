@@ -1,8 +1,8 @@
 import type { CBRResult, ToolId, Weather } from "../types";
 
 export const tileSize = 32;
-export const mapWidth = 24;
-export const mapHeight = 18;
+export const mapWidth = 44;
+export const mapHeight = 32;
 
 export const toolLabels: Record<ToolId, string> = {
   hoe: "enxada",
@@ -11,6 +11,7 @@ export const toolLabels: Record<ToolId, string> = {
   fertilizer: "adubo",
   pesticide: "controle de pragas",
   harvest: "colher",
+  fishingRod: "vara de pesca",
 };
 
 export const toolHotkeys: Record<string, ToolId> = {
@@ -20,6 +21,7 @@ export const toolHotkeys: Record<string, ToolId> = {
   "4": "fertilizer",
   "5": "pesticide",
   "6": "harvest",
+  "7": "fishingRod",
 };
 
 export const weatherLabels: Record<Weather, string> = {

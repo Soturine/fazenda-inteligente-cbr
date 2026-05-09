@@ -1,16 +1,18 @@
 import { actionLabels, resultLabels } from "../data/gameData";
+import { cropTypes } from "../data/cropTypes";
 import { initialCases } from "../data/initialCases";
 import type { CBRAction, CBRAnalysis, CBRCase, CBRCurrentCase, CropPlotState, PlantStage, SimilarityResult, Weather } from "../types";
 import { SaveSystem } from "./SaveSystem";
 
 const weights: Record<keyof CBRCurrentCase, number> = {
   clima: 10,
-  solo: 20,
+  solo: 15,
   umidade: 15,
-  pragas: 20,
+  pragas: 15,
   crescimento: 10,
   saude: 15,
   estagioPlanta: 10,
+  tipoCultura: 10,
 };
 
 const resultPriority: Record<CBRCase["resultado"], number> = {
@@ -23,7 +25,7 @@ const resultPriority: Record<CBRCase["resultado"], number> = {
 
 export class CBRSystem {
   getLearnedCases(): CBRCase[] {
-    return SaveSystem.loadLearnedCases();
+    return SaveSystem.loadLearnedCases().map((caseItem) => this.normalizeCase(caseItem));
   }
 
   getCaseBase(): CBRCase[] {
@@ -39,27 +41,23 @@ export class CBRSystem {
       crescimento: this.mapGrowth(plot),
       saude: plot.health,
       estagioPlanta: this.mapPlantStage(plot),
+      tipoCultura: plot.cropType ?? "nenhuma",
     };
   }
 
   calculateSimilarity(currentCase: CBRCurrentCase, storedCase: CBRCase): SimilarityResult {
+    const normalizedCase = this.normalizeCase(storedCase);
     const matches = {} as Record<keyof CBRCurrentCase, boolean>;
     let score = 0;
 
     (Object.keys(weights) as Array<keyof CBRCurrentCase>).forEach((attribute) => {
-      const matched = currentCase[attribute] === storedCase[attribute];
+      const matched = currentCase[attribute] === normalizedCase[attribute];
       matches[attribute] = matched;
 
-      if (matched) {
-        score += weights[attribute];
-      }
+      if (matched) score += weights[attribute];
     });
 
-    return {
-      score,
-      percentage: score,
-      matches,
-    };
+    return { score, percentage: score, matches };
   }
 
   analyze(currentCase: CBRCurrentCase): CBRAnalysis {
@@ -74,7 +72,7 @@ export class CBRSystem {
       reusedAction,
       recommendedAction: revised.action,
       adaptations: revised.adaptations,
-      explanation: this.buildExplanation(retrieved.similarity, reusedAction, revised.action, revised.adaptations),
+      explanation: this.buildExplanation(retrieved.similarity, currentCase, reusedAction, revised.action, revised.adaptations),
     };
   }
 
@@ -89,28 +87,26 @@ export class CBRSystem {
       criadoEm: new Date().toISOString(),
     };
 
-    SaveSystem.saveLearnedCases([learnedCase, ...learnedCases].slice(0, 80));
+    SaveSystem.saveLearnedCases([learnedCase, ...learnedCases].slice(0, 90));
     return learnedCase;
   }
 
   private retrieve(currentCase: CBRCurrentCase): { case: CBRCase; similarity: SimilarityResult } {
     const base = this.getCaseBase();
-    const firstCase = base[0];
-    let best = {
-      case: firstCase,
-      similarity: this.calculateSimilarity(currentCase, firstCase),
-    };
+    const firstCase = this.normalizeCase(base[0]);
+    let best = { case: firstCase, similarity: this.calculateSimilarity(currentCase, firstCase) };
 
     base.slice(1).forEach((storedCase) => {
-      const similarity = this.calculateSimilarity(currentCase, storedCase);
+      const normalizedCase = this.normalizeCase(storedCase);
+      const similarity = this.calculateSimilarity(currentCase, normalizedCase);
 
       if (similarity.score > best.similarity.score) {
-        best = { case: storedCase, similarity };
+        best = { case: normalizedCase, similarity };
         return;
       }
 
-      if (similarity.score === best.similarity.score && resultPriority[storedCase.resultado] > resultPriority[best.case.resultado]) {
-        best = { case: storedCase, similarity };
+      if (similarity.score === best.similarity.score && resultPriority[normalizedCase.resultado] > resultPriority[best.case.resultado]) {
+        best = { case: normalizedCase, similarity };
       }
     });
 
@@ -131,6 +127,9 @@ export class CBRSystem {
     } else if (currentCase.estagioPlanta === "pronto") {
       action = "colher";
       adaptations.push("planta pronta deve ser colhida");
+    } else if (currentCase.tipoCultura === "tomato" && (currentCase.pragas === "media" || currentCase.pragas === "alta")) {
+      action = "tratar_pragas";
+      adaptations.push("tomate é mais sensível a pragas");
     } else if (currentCase.pragas === "alta") {
       action = "tratar_pragas";
       adaptations.push("pragas altas têm prioridade");
@@ -140,6 +139,9 @@ export class CBRSystem {
     } else if (hasPlant && currentCase.solo === "pobre" && currentCase.saude === "amarelada") {
       action = "adubar";
       adaptations.push("solo pobre com planta amarelada indica adubação");
+    } else if (currentCase.tipoCultura === "strawberry" && hasPlant && currentCase.umidade === "media") {
+      action = reusedAction === "esperar" ? "esperar" : reusedAction;
+      adaptations.push("morango reage bem com umidade média ou alta");
     }
 
     if (hasPlant && (action === "plantar" || action === "preparar_solo")) {
@@ -155,8 +157,9 @@ export class CBRSystem {
     return { action, adaptations };
   }
 
-  private buildExplanation(similarity: SimilarityResult, reusedAction: CBRAction, recommendedAction: CBRAction, adaptations: string[]): string {
-    let text = `Já vi um caso parecido com ${similarity.percentage}% de similaridade. Minha recomendação é ${actionLabels[recommendedAction]}.`;
+  private buildExplanation(similarity: SimilarityResult, currentCase: CBRCurrentCase, reusedAction: CBRAction, recommendedAction: CBRAction, adaptations: string[]): string {
+    const cropName = currentCase.tipoCultura === "nenhuma" ? "canteiro" : cropTypes[currentCase.tipoCultura].name;
+    let text = `Já vi um caso parecido com ${similarity.percentage}% de similaridade para ${cropName}. Minha recomendação é ${actionLabels[recommendedAction]}.`;
 
     if (recommendedAction !== reusedAction) {
       text += ` Adaptei a experiência anterior, que indicava ${actionLabels[reusedAction]}.`;
@@ -164,11 +167,19 @@ export class CBRSystem {
 
     if (adaptations.length > 0) {
       text += ` Motivo: ${adaptations.join("; ")}.`;
+    } else if (currentCase.tipoCultura === "corn") {
+      text += " O milho gosta de sol, mas ainda precisa de umidade estável.";
+    } else if (currentCase.tipoCultura === "strawberry") {
+      text += " Morangos preferem umidade média ou alta.";
     } else {
       text += " A experiência recuperada ainda combina com este canteiro.";
     }
 
     return text;
+  }
+
+  private normalizeCase(caseItem: CBRCase): CBRCase {
+    return { ...caseItem, tipoCultura: caseItem.tipoCultura ?? "nenhuma" };
   }
 
   private mapGrowth(plot: CropPlotState): CBRCurrentCase["crescimento"] {

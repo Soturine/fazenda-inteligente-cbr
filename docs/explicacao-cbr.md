@@ -17,6 +17,7 @@ Em Fazendinha CBR, cada caso representa uma situação agrícola de um canteiro.
 - crescimento;
 - saúde da planta;
 - estágio da planta;
+- tipo de cultura;
 - ação aplicada;
 - resultado observado;
 - explicação.
@@ -32,6 +33,7 @@ Exemplo:
   "crescimento": "broto",
   "saude": "murcha",
   "estagioPlanta": "crescendo",
+  "tipoCultura": "tomato",
   "acaoAplicada": "regar",
   "resultado": "melhorou"
 }
@@ -44,12 +46,13 @@ Quando o jogador pressiona `Q` perto de um canteiro, o `CBRSystem` cria um caso 
 Depois, o sistema compara o caso atual com todos os casos da base. A similaridade é calculada por pontos:
 
 - clima igual: +10;
-- solo igual: +20;
+- solo igual: +15;
 - umidade igual: +15;
-- pragas iguais: +20;
+- pragas iguais: +15;
 - crescimento igual: +10;
 - saúde igual: +15;
 - estágio da planta igual: +10.
+- tipo de cultura igual: +10.
 
 O caso com maior pontuação é recuperado. Em caso de empate, o sistema prefere o caso com melhor resultado anterior.
 
@@ -71,6 +74,8 @@ A solução antiga nem sempre serve diretamente para o novo contexto. Por isso, 
 - solo pobre e planta amarelada: adubar;
 - solo encharcado: evitar regar;
 - canteiro já plantado: não recomendar plantar novamente.
+- tomate com pragas médias ou altas: priorizar tratar pragas;
+- morango com umidade adequada: manter ou reforçar cuidado com água.
 
 Essa adaptação corresponde ao Revise.
 
@@ -93,4 +98,4 @@ O sistema não usa redes neurais nem machine learning estatístico. Ele raciocin
 - A avaliação do resultado é simplificada.
 - O clima é sorteado de forma simples.
 - O LocalStorage salva dados apenas no navegador do jogador.
-- O sistema ainda não considera tipos diferentes de cultura ou estações do ano.
+- O sistema considera tipos de cultura, mas ainda não possui estações do ano completas.

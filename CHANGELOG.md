@@ -1,5 +1,29 @@
 # Changelog
 
+## [2.4.0] - 2026-05-08
+### Adicionado
+- Menu principal com customização de personagem.
+- Personagem segurando ferramentas visualmente.
+- Tipos diferentes de sementes e culturas.
+- Loja com compra, venda e economia dinâmica.
+- Lago vivo com animação de água.
+- Sistema simples de pesca.
+- Mapa maior com câmera seguindo o personagem.
+- Casa interativa para dormir e avançar o dia.
+- Interação com canteiros por clique.
+- Céu e efeitos visuais de clima.
+- Árvores maiores com animação de vento.
+- Melhorias visuais na casa, cerca e mapa.
+- CBR considerando tipo de cultura.
+- UI inspirada em jogos web casuais, com botões, ícones, feedbacks e menus mais amigáveis.
+
+### Alterado
+- Melhorias gerais no visual e no game feel.
+- HUD, mensagens, ícones e feedbacks mais amigáveis.
+- Canteiros, plantas, árvores, casa, cerca e mapa com visual mais vivo.
+- Interface menos acadêmica e mais próxima de um jogo web casual.
+- Documentação atualizada para loja, pesca, culturas, customização e CBR por cultura.
+
 ## [2.2.0] - 2026-05-08
 ### Adicionado
 - Estados visuais para solo seco, normal, molhado, encharcado e adubado.

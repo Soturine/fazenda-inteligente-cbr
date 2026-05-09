@@ -1,5 +1,6 @@
-﻿import Phaser from "phaser";
-import type { ActionResult, CBRAction, CBRResult, CropPlotState, DaySummary, Moisture, PestLevel, ToolId, Vector2Like, Weather } from "../types";
+import Phaser from "phaser";
+import { cropTypes } from "../data/cropTypes";
+import type { ActionResult, CBRAction, CBRResult, CropPlotState, CropType, DaySummary, Moisture, PestLevel, ToolId, Vector2Like, Weather } from "../types";
 import { CropPlot } from "../entities/CropPlot";
 import { InventorySystem } from "./InventorySystem";
 import { VisualStateSystem } from "./VisualStateSystem";
@@ -11,6 +12,7 @@ const toolActions: Record<ToolId, CBRAction> = {
   fertilizer: "adubar",
   pesticide: "tratar_pragas",
   harvest: "colher",
+  fishingRod: "esperar",
 };
 
 export class CropSystem {
@@ -39,6 +41,10 @@ export class CropSystem {
       return { ok: false, action, message: "Você precisa estar perto de um canteiro." };
     }
 
+    if (tool === "fishingRod") {
+      return { ok: false, action, message: "Use a vara perto do lago para pescar." };
+    }
+
     if (tool === "hoe") {
       if (plot.stage !== "empty") {
         return { ok: false, action, message: "Esse canteiro já está preparado ou ocupado." };
@@ -48,8 +54,9 @@ export class CropSystem {
       plot.soil = "normal";
       plot.moisture = "media";
       plot.health = "saudavel";
+      plot.cropType = undefined;
       plot.fertilizedUntilDay = undefined;
-      return { ok: true, action, message: "Solo preparado. Agora plante uma semente." };
+      return { ok: true, action, message: "Solo preparado. Escolha uma semente e plante." };
     }
 
     if (tool === "seed") {
@@ -57,17 +64,19 @@ export class CropSystem {
         return { ok: false, action, message: "Prepare o solo com a enxada antes de plantar." };
       }
 
-      if (!inventory.consumeSeed()) {
-        return { ok: false, action, message: "Você está sem sementes." };
+      const cropType = inventory.selectedCrop;
+      if (!inventory.consumeSeed(cropType)) {
+        return { ok: false, action, message: `Você está sem sementes de ${cropTypes[cropType].name}.` };
       }
 
       plot.stage = "seed";
       plot.previousStage = "seed";
+      plot.cropType = cropType;
       plot.growth = "semente";
       plot.age = 0;
       plot.health = "saudavel";
       plot.pests = "nenhuma";
-      return { ok: true, action, message: "Semente plantada." };
+      return { ok: true, action, message: `Semente de ${cropTypes[cropType].name} plantada.` };
     }
 
     if (tool === "water") {
@@ -110,13 +119,14 @@ export class CropSystem {
     }
 
     if (tool === "harvest") {
-      if (plot.stage !== "ready") {
+      if (plot.stage !== "ready" || !plot.cropType) {
         return { ok: false, action, message: "Essa planta ainda não está pronta para colher." };
       }
 
-      inventory.addHarvest();
+      const cropType = plot.cropType;
+      inventory.addHarvest(cropType);
       this.plots[plot.id] = CropPlot.reset(plot);
-      return { ok: true, action, message: "Colheita vendida por 20 moedas.", result: "colheu" };
+      return { ok: true, action, message: `${cropTypes[cropType].name} colhida! Venda na loja para ganhar moedas.`, result: "colheu" };
     }
 
     return { ok: false, action, message: "Ferramenta desconhecida." };
@@ -130,7 +140,8 @@ export class CropSystem {
 
       this.applyWeather(plot, weather);
 
-      if (this.isCropStage(plot) && plot.age > 1 && Math.random() < 0.1) {
+      const crop = this.getCrop(plot.cropType);
+      if (this.isCropStage(plot) && plot.age > 1 && Math.random() < 0.15 * (1 - crop.pestResistance)) {
         plot.pests = this.worsenPests(plot.pests);
       }
 
@@ -189,6 +200,7 @@ export class CropSystem {
 
   private applyWeather(plot: CropPlotState, weather: Weather): void {
     if (plot.stage === "empty") return;
+    const crop = this.getCrop(plot.cropType);
 
     if (weather === "chuvoso") {
       if (plot.moisture === "alta" && plot.soil !== "pobre") plot.soil = "encharcado";
@@ -197,13 +209,14 @@ export class CropSystem {
     }
 
     if (weather === "seco") {
-      plot.moisture = this.lowerMoisture(this.lowerMoisture(plot.moisture));
+      const drynessSteps = crop.droughtResistance > 0.6 ? 1 : 2;
+      for (let i = 0; i < drynessSteps; i += 1) plot.moisture = this.lowerMoisture(plot.moisture);
       if (plot.moisture === "baixa" && plot.soil !== "pobre") plot.soil = "seco";
     }
 
     if (weather === "ensolarado") {
       plot.moisture = this.lowerMoisture(plot.moisture);
-      if (plot.moisture === "baixa" && Math.random() < 0.35 && plot.soil !== "pobre") plot.soil = "seco";
+      if (plot.moisture === "baixa" && Math.random() < 0.28 * (1 - crop.droughtResistance) && plot.soil !== "pobre") plot.soil = "seco";
     }
   }
 
@@ -238,21 +251,23 @@ export class CropSystem {
   }
 
   private grow(plot: CropPlotState): void {
-    if (plot.stage === "seed") {
-      plot.stage = "sprout";
-      plot.growth = "broto";
-    } else if (plot.stage === "sprout") {
-      plot.stage = "middle";
-      plot.growth = "medio";
-    } else if (plot.stage === "middle") {
-      plot.stage = "adult";
-      plot.growth = "adulto";
-    } else if (plot.stage === "adult") {
+    plot.age += 1;
+    const growthDays = this.getCrop(plot.cropType).growthDays;
+    const progress = plot.age / growthDays;
+
+    if (progress >= 1) {
       plot.stage = "ready";
       plot.growth = "adulto";
+    } else if (progress >= 0.72) {
+      plot.stage = "adult";
+      plot.growth = "adulto";
+    } else if (progress >= 0.42) {
+      plot.stage = "middle";
+      plot.growth = "medio";
+    } else {
+      plot.stage = "sprout";
+      plot.growth = "broto";
     }
-
-    plot.age += 1;
   }
 
   private isCropStage(plot: CropPlotState): boolean {
@@ -286,4 +301,7 @@ export class CropSystem {
     return stageScore + moistureScore + soilScore + pestScore + healthScore;
   }
 
+  private getCrop(cropType?: CropType) {
+    return cropTypes[cropType ?? "carrot"];
+  }
 }

@@ -1,48 +1,40 @@
-﻿# Fazendinha CBR
+# Fazendinha CBR
 
-Fazendinha CBR é um jogo 2D top-down de fazenda feito com Vite, TypeScript e Phaser 3. O jogador anda pelo mapa, prepara canteiros, planta sementes, rega, aduba, trata pragas, colhe alimentos e recebe recomendações de um assistente agrícola baseado em Raciocínio Baseado em Casos.
+Fazendinha CBR é um jogo web 2D top-down de fazenda feito com Vite, TypeScript e Phaser 3. O jogador explora um mapa maior com câmera, cuida dos canteiros, compra sementes, vende colheitas, pesca no lago e recebe recomendações de um assistente agrícola baseado em Raciocínio Baseado em Casos.
 
-## Objetivo acadêmico
+O visual usa arte original desenhada por código com Phaser/CSS. A direção é inspirada na sensação de jogos de fazenda e jogos web casuais, mas sem copiar sprites, sons, mapas ou assets protegidos.
 
-O objetivo do projeto é demonstrar o paradigma de Raciocínio Baseado em Casos, ou CBR, dentro de uma experiência jogável. A IA não aparece como formulário principal: ela é um sistema interno de gameplay que observa o canteiro e recomenda ações ao jogador.
+## Objetivo Acadêmico
+
+Demonstrar o paradigma de Raciocínio Baseado em Casos, ou CBR, dentro de uma experiência jogável. A IA não é um formulário: ela é um sistema interno do jogo que observa o canteiro, compara com experiências anteriores e sugere uma ação.
 
 Disciplina: Inteligência Artificial  
 Tema: Raciocínio Baseado em Casos  
 Autores: _preencher com os nomes do grupo_
 
-## Como acessar online
+## Como Acessar Online
 
 O jogo publicado no GitHub Pages ficará disponível em:
 
 https://soturine.github.io/fazenda-inteligente-cbr/
 
-## Como executar localmente
-
-Instale as dependências e rode o servidor de desenvolvimento:
+## Como Executar Localmente
 
 ```bash
 npm install
 npm run dev
 ```
 
-Para gerar a versão de produção:
+Para gerar e testar a versão de produção:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Deploy no GitHub Pages
+## Deploy No GitHub Pages
 
-O projeto usa GitHub Actions para publicar automaticamente no GitHub Pages.
-
-O build é gerado com:
-
-```bash
-npm run build
-```
-
-O Vite gera os arquivos em `dist/`, e o workflow `.github/workflows/deploy.yml` publica esse conteúdo automaticamente no GitHub Pages.
+O projeto usa GitHub Actions para publicar automaticamente no GitHub Pages a partir da branch `main`. O build é gerado com `npm run build`, o Vite cria a pasta `dist/` e o workflow `.github/workflows/deploy.yml` publica esse conteúdo.
 
 O `vite.config.ts` usa:
 
@@ -50,152 +42,185 @@ O `vite.config.ts` usa:
 base: "/fazenda-inteligente-cbr/"
 ```
 
-Esse caminho é necessário para que os assets funcionem corretamente no GitHub Pages.
-
 ## Controles
 
 - `WASD` ou `setas`: mover o personagem.
-- `1`: selecionar enxada.
-- `2`: selecionar semente.
-- `3`: selecionar regador.
-- `4`: selecionar adubo.
-- `5`: selecionar controle de pragas.
-- `6`: selecionar colher.
-- `E` ou `Espaço`: usar a ferramenta no canteiro atual ou no canteiro à frente.
-- `Q`: pedir recomendação ao Assistente CBR.
-- `N`: dormir e avançar para o próximo dia.
+- `1` a `7`: trocar ferramenta.
+- `TAB`: trocar tipo de semente.
+- `E` ou `Espaço`: usar ferramenta ou interagir com casa/loja/lago.
+- Clique no canteiro: usar a ferramenta atual.
+- Clique direito no canteiro: pedir análise CBR daquele canteiro.
+- `Q`: consultar o Assistente CBR.
+- `N`: dormir/avançar o dia.
+- `ESC`: abrir pausa.
 
-## Mecânicas do jogo
+## Mecânicas Do Jogo
 
-O jogador começa com 10 sementes, 0 colheitas e 0 moedas.
+O jogador começa com sementes iniciais, moedas e uma fazenda com casa, loja, lago, árvores, cercas, espantalho CBR e canteiros. É possível preparar solo, plantar, regar, adubar, tratar pragas, colher, pescar e vender itens.
 
-O mapa possui grama, caminho, casa, árvores, cerca, espantalho inteligente e uma área de plantio. Os canteiros passam por estados visuais:
+A casa é a forma principal de dormir e avançar o dia. Dormir salva o jogo, muda o clima, atualiza a economia e faz as plantações crescerem ou piorarem conforme cuidado, solo, umidade e pragas.
 
-- vazio;
-- solo preparado;
-- semente;
-- broto;
-- planta média;
-- planta adulta;
-- planta com problema;
-- pronta para colher.
+## Menu E Customização
 
-As ferramentas permitem preparar solo, plantar, regar, adubar, tratar pragas e colher plantas prontas. A colheita aumenta as moedas do jogador.
+Antes de entrar na fazenda, o jogo mostra um menu principal com:
 
-O jogo também possui sistema de dias e clima. Chuva ajuda a regar, clima seco reduz a umidade, clima nublado é neutro e sol pode secar o solo aos poucos.
+- Jogar;
+- Continuar;
+- Resetar progresso;
+- Como jogar;
+- Tela cheia;
+- customização do fazendeiro.
 
-## Polimento visual e game feel
+A customização salva nome, cor da pele, cabelo, roupa e estilo visual. Essas escolhas alteram o personagem dentro do jogo e ficam salvas no LocalStorage.
 
-A versão atual adiciona feedback visual direto para as ações do jogador e para o estado dos canteiros:
+## Culturas
 
-- solo seco aparece mais claro, opaco e com pequenas rachaduras;
-- solo normal mantém o marrom comum dos canteiros;
-- solo molhado aparece mais escuro, com brilhos e pequenos pixels azulados;
-- solo encharcado fica ainda mais escuro e mostra poças sutis;
-- solo adubado recebe pontos verdes/amarelos e uma borda verde suave por alguns dias;
-- plantas com pragas mostram pequenos pontos escuros ou vermelhos se movendo;
-- plantas com problema ficam amareladas, murchas ou manchadas;
-- plantas prontas para colher exibem frutos amarelos e brilho discreto.
+O jogo possui quatro culturas:
 
-As ferramentas também têm resposta visual e sonora:
+- cenoura: cresce rápido, vende barato e tolera um pouco de seca;
+- milho: cresce mais devagar, vende melhor e gosta de sol;
+- tomate: vende bem, mas é mais sensível a pragas;
+- morango: prefere clima ameno/chuvoso e vale mais quando pronto.
 
-- enxada: poeira marrom e tremida visual no canteiro;
-- semente: brilho/amarelo caindo no solo;
-- regador: gotas azuis;
-- adubo: partículas verdes e amarelas;
-- controle de pragas: névoa esverdeada;
-- colheita: brilho, estrelas e moedas subindo;
-- próximo dia: transição rápida de escurecimento.
+Cada cultura tem preço de semente, preço base de venda, tempo de crescimento, resistência à seca, resistência a pragas, clima preferido e visual próprio nos estágios de crescimento.
 
-Os sons são gerados por Web Audio API, sem arquivos externos ou áudio copiado de jogos comerciais. O botão "Som" permite ativar ou desativar o áudio, e a preferência fica salva no LocalStorage.
+## Loja E Economia Dinâmica
 
-## Como o CBR aparece no gameplay
+A loja da vila fica no mapa e abre ao interagir com a banca. Ela permite:
 
-O CBR é representado pelo Assistente CBR, um espantalho inteligente no mapa e em um painel compacto lateral. Quando o jogador fica perto de um canteiro e pressiona `Q`, o assistente analisa a situação agrícola daquele canteiro.
+- comprar sementes;
+- vender colheitas;
+- vender peixes;
+- ver preços atuais;
+- acompanhar tendência de mercado.
 
-O caso atual contém clima, solo, umidade, pragas, crescimento, saúde e estágio da planta. O assistente compara esse caso com a base de casos e recomenda ações como regar, adubar, tratar pragas, plantar, colher ou esperar.
+Os preços variam com o dia, clima, cultura, raridade, vendas recentes e eventos simples de mercado. Se o jogador vende muito um item, o preço tende a cair. Se o clima prejudica uma cultura, seu preço pode subir.
 
-Ao pedir uma recomendação, o canteiro analisado recebe destaque amarelo, o assistente mostra uma animação de pensamento e o painel lateral resume o caso parecido, a similaridade, a ação recomendada e as etapas do ciclo CBR. Quando um novo caso é salvo, o painel indica que uma nova experiência entrou na memória.
+## Lago E Pesca
 
-## Ciclo CBR no jogo
+O mapa inclui um lago orgânico com água animada, reflexos, lírios e movimento. Com a vara de pesca equipada, o jogador pode pescar perto da água.
 
-### Retrieve
+Peixes disponíveis:
 
-Ao pressionar `Q`, o assistente monta o caso atual do canteiro e recupera o caso mais parecido da memória.
+- lambari;
+- tilápia;
+- carpa;
+- peixe dourado raro.
 
-### Reuse
+O clima influencia a chance de pesca, e os peixes podem ser vendidos na loja por preços variáveis.
 
-A ação aplicada no caso recuperado é usada como solução inicial.
+## Clima Visual E Mundo Vivo
 
-### Revise
+O clima aparece no céu, no mapa e nos efeitos:
 
-A solução é adaptada por regras fortes do jogo:
+- ensolarado: céu azul, brilho quente e sol;
+- chuvoso: gotas animadas, tom frio e lago mais ativo;
+- nublado: nuvens passando e luz suave;
+- seco: tom amarelado, poeira e solo secando mais rápido.
 
-- canteiro vazio: preparar solo;
-- solo preparado: plantar;
-- planta pronta: colher;
-- pragas altas: tratar pragas;
-- solo seco ou baixa umidade: regar;
-- solo pobre e planta amarelada: adubar;
-- solo encharcado: evitar regar.
+O mapa foi ampliado e usa câmera seguindo o jogador. Árvores maiores balançam com o vento, a casa possui detalhes, a cerca tem variações de madeira, há caminhos, flores, arbustos, pedras, loja, caixa de venda e lago.
 
-### Retain
+## Ferramentas Visíveis
 
-Depois que o jogador aplica uma ferramenta e avança o dia, o sistema avalia o resultado e salva o novo caso no LocalStorage. Assim, a memória do assistente cresce durante o jogo.
+O personagem segura visualmente a ferramenta atual:
 
-## Fórmula de similaridade
+- enxada;
+- saquinho de sementes;
+- regador;
+- saco de adubo;
+- borrifador contra pragas;
+- ferramenta de colheita;
+- vara de pesca.
 
-A similaridade é calculada por pontos:
+As ações têm animações curtas, partículas, sons gerados por Web Audio API e mensagens amigáveis. O botão de som salva a preferência no LocalStorage.
+
+## Como O CBR Aparece No Gameplay
+
+O Assistente CBR é o espantalho inteligente. Ao pressionar `Q` ou clicar com o botão direito em um canteiro, ele monta um caso com:
+
+- clima;
+- solo;
+- umidade;
+- pragas;
+- crescimento;
+- saúde;
+- estágio da planta;
+- tipo da cultura.
+
+O sistema recupera o caso mais parecido, reutiliza a ação antiga, revisa a recomendação por regras fortes e aprende quando o jogador avança o dia. O painel compacto mostra similaridade, ação recomendada e ciclo CBR sem dominar a tela.
+
+Exemplos de adaptação:
+
+- tomate com pragas médias/altas prioriza tratar pragas;
+- solo seco ou umidade baixa prioriza regar;
+- solo pobre com planta amarelada prioriza adubar;
+- planta pronta prioriza colher;
+- solo encharcado evita regar;
+- morango valoriza umidade média/alta.
+
+## Fórmula De Similaridade
+
+A similaridade é calculada por pontuação, com máximo de 100 pontos:
 
 - clima igual: +10;
-- solo igual: +20;
+- solo igual: +15;
 - umidade igual: +15;
-- pragas iguais: +20;
+- pragas iguais: +15;
 - crescimento igual: +10;
 - saúde igual: +15;
-- estágio da planta igual: +10.
+- estágio da planta igual: +10;
+- tipo de cultura igual: +10.
 
-A pontuação máxima é 100 pontos. O painel do assistente mostra a porcentagem do caso recuperado de forma discreta.
+Em caso de empate, o sistema prefere o caso com melhor resultado anterior.
 
-## Arquitetura
-
-O projeto foi organizado como um jogo modular em Vite + TypeScript + Phaser 3:
+## Estrutura De Arquivos
 
 ```text
 .
 ├── index.html
-├── css/
-│   └── style.css
+├── css/style.css
 ├── src/
 │   ├── main.ts
 │   ├── types.ts
 │   ├── scenes/
 │   │   ├── BootScene.ts
+│   │   ├── MenuScene.ts
 │   │   └── FarmScene.ts
 │   ├── systems/
 │   │   ├── CBRSystem.ts
+│   │   ├── CameraSystem.ts
+│   │   ├── CharacterCustomizationSystem.ts
 │   │   ├── CropSystem.ts
+│   │   ├── CropTypeSystem.ts
 │   │   ├── DayNightSystem.ts
+│   │   ├── EconomySystem.ts
 │   │   ├── EffectSystem.ts
 │   │   ├── FarmMap.ts
+│   │   ├── FishingSystem.ts
 │   │   ├── InventorySystem.ts
 │   │   ├── PlayerSystem.ts
+│   │   ├── PointerInteractionSystem.ts
 │   │   ├── SaveSystem.ts
+│   │   ├── ShopSystem.ts
 │   │   ├── SoundSystem.ts
+│   │   ├── ToolVisualSystem.ts
 │   │   ├── VisualStateSystem.ts
-│   │   └── WeatherSystem.ts
+│   │   ├── WaterSystem.ts
+│   │   ├── WeatherSystem.ts
+│   │   └── WeatherVisualSystem.ts
 │   ├── entities/
 │   │   ├── Assistant.ts
 │   │   ├── CropPlot.ts
 │   │   └── Player.ts
 │   ├── data/
+│   │   ├── characterOptions.ts
+│   │   ├── cropTypes.ts
+│   │   ├── fishTypes.ts
 │   │   ├── gameData.ts
-│   │   └── initialCases.ts
-│   └── ui/
-│       └── UISystem.ts
+│   │   ├── initialCases.ts
+│   │   └── shopData.ts
+│   └── ui/UISystem.ts
 ├── docs/
-│   ├── explicacao-cbr.md
-│   └── roteiro-apresentacao.md
 ├── .github/workflows/deploy.yml
 ├── vite.config.ts
 ├── package.json
@@ -205,19 +230,15 @@ O projeto foi organizado como um jogo modular em Vite + TypeScript + Phaser 3:
 └── .gitignore
 ```
 
-## Responsabilidade dos módulos
+## Persistência
 
-- `Scenes`: telas do jogo e integração com Phaser.
-- `Systems`: regras de gameplay, CBR, save, inventário, clima, dias, efeitos, som e estados visuais.
-- `Entities`: jogador, canteiros e assistente visual.
-- `Data`: casos iniciais, labels, atalhos e constantes.
-- `UI`: HUD e painel compacto do Assistente CBR.
+O LocalStorage salva progresso da fazenda, inventário, sementes por cultura, colheitas, peixes, moedas, preços de mercado, casos aprendidos, customização do personagem, ferramenta atual, semente selecionada, posição do jogador e preferência de som.
 
-## Possíveis melhorias futuras
+## Possíveis Melhorias Futuras
 
-- Adicionar loja de sementes e upgrades de ferramentas.
-- Criar diferentes culturas com tempos de crescimento próprios.
-- Adicionar música ambiente autoral.
-- Implementar sprites autorais mais detalhados para personagem e plantas.
-- Criar metas semanais ou missões.
+- Criar missões semanais e NPCs com diálogos.
+- Adicionar upgrades de ferramentas.
+- Criar música ambiente autoral.
+- Adicionar baú, calendário e caixa de venda mais completa.
+- Melhorar a pesca com minigame de precisão.
 - Exportar e importar a base de casos aprendidos.
