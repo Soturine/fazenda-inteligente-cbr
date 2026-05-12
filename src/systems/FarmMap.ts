@@ -468,7 +468,13 @@ export class FarmMap {
       : weather === "nublado"
         ? [0x68a35b, 0x629a55, 0x6aa65d, 0x5b914f]
         : [0x70b85d, 0x69ae57, 0x78bf66, 0x63a950];
-    return palette[base % palette.length];
+    const wind = weather === "chuvoso" ? 1 : weather === "nublado" ? 0.72 : weather === "seco" ? 0.42 : 0.34;
+    const wave = Math.sin(time / 850 + x * 0.63 + y * 0.41) * wind;
+    const color = Phaser.Display.Color.ValueToColor(palette[base % palette.length]);
+    const shifted = wave >= 0
+      ? color.brighten(Math.round(wave * 8))
+      : color.darken(Math.round(Math.abs(wave) * 7));
+    return shifted.color;
   }
 
   private drawSmallDecorations(graphics: Phaser.GameObjects.Graphics, x: number, y: number, time: number, weather: Weather): void {
@@ -541,7 +547,7 @@ export class FarmMap {
   }
 
   private isBridgeTile(x: number, y: number): boolean {
-    return (x === 32 && y >= 20 && y <= 27)
-      || (y === 22 && x >= 25 && x <= 39);
+    return (x === 32 && y >= 20 && y <= 22)
+      || (y === 22 && x >= 25 && x <= 32);
   }
 }

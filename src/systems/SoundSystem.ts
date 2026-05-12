@@ -1,3 +1,5 @@
+import type { Weather } from "../types";
+
 export type GameSound =
   | "step"
   | "hoe"
@@ -22,6 +24,9 @@ const legacyMutedKey = "fazendinha-cbr-muted";
 export class SoundSystem {
   private audioContext?: AudioContext;
   private muted = (localStorage.getItem(mutedKey) ?? localStorage.getItem(oldCausosMutedKey) ?? localStorage.getItem(legacyMutedKey)) === "true";
+  private rainSource?: AudioBufferSourceNode;
+  private rainGain?: GainNode;
+  private rainFilter?: BiquadFilterNode;
 
   get isMuted(): boolean {
     return this.muted;
@@ -36,9 +41,20 @@ export class SoundSystem {
     if (!this.muted) {
       void this.resume();
       this.play("cbr");
+    } else {
+      this.stopRain();
     }
 
     return this.muted;
+  }
+
+  syncWeather(weather: Weather): void {
+    if (weather === "chuvoso" && !this.muted) {
+      this.startRain();
+      return;
+    }
+
+    this.stopRain();
   }
 
   play(sound: GameSound): void {
@@ -189,5 +205,77 @@ export class SoundSystem {
     gain.connect(context.destination);
     source.start(start);
     source.stop(start + duration);
+  }
+
+  private startRain(): void {
+    if (this.rainSource || this.muted) return;
+
+    const context = this.getContext();
+    if (!context) return;
+
+    const duration = 2.4;
+    const sampleCount = Math.max(1, Math.floor(context.sampleRate * duration));
+    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < sampleCount; i += 1) {
+      const hiss = Math.random() * 2 - 1;
+      const droplets = Math.random() > 0.992 ? (Math.random() * 2 - 1) * 0.9 : 0;
+      data[i] = hiss * 0.22 + droplets;
+    }
+
+    const source = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const gain = context.createGain();
+    const now = context.currentTime;
+
+    source.buffer = buffer;
+    source.loop = true;
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(1450, now);
+    filter.Q.setValueAtTime(0.72, now);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.024, now + 0.85);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(context.destination);
+    source.start(now);
+
+    this.rainSource = source;
+    this.rainGain = gain;
+    this.rainFilter = filter;
+    void this.resume();
+  }
+
+  private stopRain(): void {
+    if (!this.rainSource) return;
+
+    const context = this.audioContext;
+    const source = this.rainSource;
+    const gain = this.rainGain;
+    const now = context?.currentTime ?? 0;
+
+    if (context && gain) {
+      gain.gain.cancelScheduledValues(now);
+      gain.gain.setTargetAtTime(0.001, now, 0.18);
+      window.setTimeout(() => {
+        try {
+          source.stop();
+        } catch {
+          // Already stopped by the browser.
+        }
+      }, 520);
+    } else {
+      try {
+        source.stop();
+      } catch {
+        // Already stopped by the browser.
+      }
+    }
+
+    this.rainSource = undefined;
+    this.rainGain = undefined;
+    this.rainFilter = undefined;
   }
 }

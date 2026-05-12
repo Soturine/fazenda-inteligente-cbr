@@ -10,7 +10,7 @@ export const toolLabels: Record<ToolId, string> = {
   water: "regador",
   fertilizer: "adubo",
   pesticide: "inseticida",
-  harvest: "colheita",
+  harvest: "cesta",
   fishingRod: "vara de pesca",
 };
 

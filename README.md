@@ -28,17 +28,27 @@ As imagens abaixo mostram a versão atual da interface, com abertura, menu de jo
 |---|---|
 | ![Abertura](docs/screenshots/intro.png) | ![Menu principal](docs/screenshots/menu.png) |
 
-| Fazenda | Culturas prontas |
+| Fazenda | Chuva |
 |---|---|
-| ![Fazenda](docs/screenshots/fazenda.png) | ![Culturas prontas para colher](docs/screenshots/culturas-prontas.png) |
+| ![Fazenda](docs/screenshots/fazenda.png) | ![Chuva no mapa e no fundo](docs/screenshots/chuva.png) |
+
+| Culturas prontas | Pesca |
+|---|---|
+| ![Culturas prontas para colher](docs/screenshots/culturas-prontas.png) | ![Pesca](docs/screenshots/pesca.png) |
 
 | Loja | Casa |
 |---|---|
 | ![Loja](docs/screenshots/loja.png) | ![Casa](docs/screenshots/casa.png) |
 
-| Pesca | CBR |
+| CBR |
 |---|---|
-| ![Pesca](docs/screenshots/pesca.png) | ![CBR analisando um canteiro](docs/screenshots/cbr.png) |
+| ![CBR analisando um canteiro](docs/screenshots/cbr.png) |
+
+### GIFs Curtos
+
+| Chuva e vento |
+|---|
+| ![Chuva e vento no Vale dos Casos](docs/gifs/chuva-e-vento.gif) |
 
 ## Como Executar Localmente
 
@@ -97,7 +107,7 @@ Antes de entrar na fazenda, o jogo mostra um menu principal com:
 
 O menu também mostra um resumo rápido dos controles: `WASD`/setas para mover, `E`/`Espaço` para interagir, clique esquerdo para usar ferramentas nos canteiros, clique direito ou `Q` para consultar o CBR, `TAB` para trocar semente e `1` a `7` para trocar ferramenta.
 
-A customização salva nome, cor da pele, cor do cabelo, cor da roupa, estilo de cabelo e estilo de roupa. As cores são escolhidas por paletas próprias do jogo, sem depender do seletor nativo do navegador. Há opções curtas, médias, longas, rabo de cavalo, cacheadas, trança, femininas, neutras, boné, chapéu de campo e chapéu de palha. As roupas incluem avental, macacão, camisa, jardineira, casaco, roupa longa, camiseta com alça e roupa de fazenda. Essas escolhas alteram o personagem dentro do jogo e ficam salvas no LocalStorage.
+A customização salva nome, cor da pele, cor do cabelo, cor da roupa, estilo de cabelo e estilo de roupa. As cores são escolhidas por paletas próprias do jogo, sem depender do seletor nativo do navegador. Há opções curtas, médias, longas, rabo de cavalo, cacheadas, trança, femininas, neutras, boné, chapéu de campo e chapéu de palha. Os estilos foram desenhados para ter silhuetas diferentes, e cabelos/acessórios acompanham a direção do personagem quando ele vira. As roupas incluem avental, macacão, camisa, jardineira, casaco, roupa longa, camiseta com alça e roupa de fazenda. Essas escolhas alteram o personagem dentro do jogo e ficam salvas no LocalStorage.
 
 ## Menu Interno
 
@@ -156,13 +166,13 @@ O clima influencia a chance de pesca, e os peixes podem ser vendidos na loja por
 O clima aparece no céu, no mapa e nos efeitos:
 
 - ensolarado: céu azul, brilho quente e sol;
-- chuvoso: gotas animadas, muitas nuvens, vento mais forte, lago mais ativo e solo molhado naturalmente;
+- chuvoso: gotas animadas dentro e fora do quadro do jogo, muitas nuvens, som ambiente de chuva, vento mais forte, lago mais ativo e solo molhado naturalmente;
 - nublado: bastante nuvens passando e luz suave;
 - seco: tom amarelado, poucas nuvens, poeira e solo secando mais rápido.
 
-Ao chover, a chuva conta como rega natural: canteiros preparados ou plantados ficam com umidade alta, o solo seco volta ao estado normal e o crescimento passa a considerar essa água do dia. Ao dormir, o jogo faz uma transição de noite com lua e paleta mais fria antes de amanhecer. Durante a sessão, o ciclo visual de dia e noite também avança de forma gradual em um ciclo mais longo, com cerca de 7 minutos: o sol nasce à esquerda, sobe, se põe à direita e dá lugar à lua, que percorre o mesmo arco durante a noite. Quando esse ciclo natural chega a um novo amanhecer, o jogo avança o dia de verdade. O brilho do fundo acompanha o astro principal, e a paleta passa suavemente por amanhecer, dia, entardecer, noite e madrugada. O fundo fora do canvas também muda com clima e noite, misturando chuva, nuvens ou seca com a iluminação do horário.
+Ao chover, a chuva conta como rega natural: canteiros preparados ou plantados ficam com umidade alta, o solo seco volta ao estado normal e o crescimento passa a considerar essa água do dia. A chuva também aparece no fundo da página, atrás do jogo, e o som ambiente é gerado por Web Audio API, respeitando o botão de mute. Ao dormir, o jogo faz uma transição de noite com lua e paleta mais fria antes de amanhecer. Durante a sessão, o ciclo visual de dia e noite também avança de forma gradual em um ciclo mais longo, com cerca de 7 minutos: o sol nasce à esquerda, sobe, se põe à direita e dá lugar à lua, que percorre o mesmo arco durante a noite. Quando esse ciclo natural chega a um novo amanhecer, o jogo avança o dia de verdade. O brilho do fundo acompanha o astro principal, e a paleta passa suavemente por amanhecer, dia, entardecer, noite e madrugada. O fundo fora do canvas também muda com clima e noite, misturando chuva, nuvens ou seca com a iluminação do horário.
 
-O mapa foi ampliado e usa câmera seguindo o jogador. Árvores maiores balançam com o vento, folhas cruzam a tela, a casa possui detalhes, a cerca tem variações de madeira vertical/horizontal e cantos, há caminhos conectando casa, loja, canteiros, caixa de venda e lago.
+O mapa foi ampliado e usa câmera seguindo o jogador. Árvores maiores balançam com o vento, folhas cruzam a tela, a grama oscila com variação sutil de tom, a casa possui detalhes, a cerca tem variações de madeira vertical/horizontal e cantos, e a passarela antiga do lago é caminhável sem liberar o movimento pela água.
 
 ## Ferramentas Visíveis
 
@@ -173,7 +183,7 @@ O personagem segura visualmente a ferramenta atual:
 - regador;
 - saco de adubo;
 - inseticida/borrifador contra pragas;
-- ferramenta de colheita;
+- cesta para colher plantas prontas;
 - vara de pesca.
 
 As ações têm animações curtas, partículas, sons gerados por Web Audio API e mensagens amigáveis. O botão de som salva a preferência no LocalStorage.

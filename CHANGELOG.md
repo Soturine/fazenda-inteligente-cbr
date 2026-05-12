@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.12.0] - 2026-05-12
+### Corrigido
+- Cabelos e chapéus do personagem receberam silhuetas mais distintas, incluindo boné, chapéu de campo, chapéu de palha, cabelo longo, cacheado, trança e estilos femininos.
+- Rabo de cavalo, trança e outros acessórios laterais agora acompanham a direção do personagem ao virar.
+- Plantio por tecla e clique agora prioriza canteiros antes de interações próximas, evitando conflitos com espantalho, lago e objetos do mapa.
+- Passarela antiga do lago foi restaurada e continua caminhável, mantendo a água bloqueada.
+- Botão da ferramenta "Inseticida" ajustado para não quebrar letras isoladas.
+- Ferramenta "Colheita" renomeada para "Cesta" na interface.
+
+### Adicionado
+- Chuva visual também no fundo da página, fora do quadro do jogo.
+- Som ambiente de chuva gerado por Web Audio API e controlado pelo mute do jogo.
+- GIF curto de chuva e vento para a documentação do README.
+
+### Alterado
+- Grama, árvores, flores, folhas e água receberam vento mais perceptível e suave, com intensidade maior em dias chuvosos.
+- Screenshots do README atualizados com a versão atual do jogo.
+- README e documentação atualizados com os polimentos visuais, chuva externa, som de chuva e renomeação da ferramenta.
+
 ## [2.11.0] - 2026-05-12
 ### Corrigido
 - Nome definitivo atualizado para "Vale dos Casos" em interface, documentação e metadados.

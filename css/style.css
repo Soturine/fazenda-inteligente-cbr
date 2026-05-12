@@ -124,6 +124,46 @@ kbd {
   overflow: hidden;
 }
 
+.sky-layer::before,
+.sky-layer::after {
+  content: "";
+  position: absolute;
+  inset: -14vh -8vw;
+  opacity: 0;
+  pointer-events: none;
+  transform: skewX(-10deg);
+  background-image:
+    linear-gradient(180deg, rgba(226, 244, 255, 0) 0 34%, rgba(226, 244, 255, 0.52) 35% 43%, rgba(226, 244, 255, 0) 44% 100%);
+  background-size: 72px 96px;
+  animation: page-rain-fall 0.62s linear infinite;
+  transition: opacity 0.35s ease;
+}
+
+.sky-layer::after {
+  background-size: 108px 124px;
+  animation-duration: 0.88s;
+  animation-delay: -0.22s;
+  filter: blur(0.3px);
+}
+
+body[data-weather="chuvoso"] .sky-layer::before {
+  opacity: 0.36;
+}
+
+body[data-weather="chuvoso"] .sky-layer::after {
+  opacity: 0.22;
+}
+
+body.is-night[data-weather="chuvoso"] .sky-layer::before,
+body.is-auto-night[data-weather="chuvoso"] .sky-layer::before {
+  opacity: 0.44;
+}
+
+body.is-night[data-weather="chuvoso"] .sky-layer::after,
+body.is-auto-night[data-weather="chuvoso"] .sky-layer::after {
+  opacity: 0.3;
+}
+
 .sun-disk {
   position: absolute;
   top: var(--sun-y, 120px);
@@ -840,6 +880,100 @@ body.is-night .cloud {
   box-shadow: 10px -7px 0 -1px #f4cc58;
 }
 
+.custom-preview[data-style="longo"] .preview-hair {
+  height: 34px;
+  border-radius: 14px 14px 18px 18px;
+  box-shadow: -8px 14px 0 -3px var(--preview-hair, #7a4a24), 8px 14px 0 -3px var(--preview-hair, #7a4a24);
+}
+
+.custom-preview[data-style="rabo"] .preview-hair {
+  width: 34px;
+  height: 16px;
+  border-radius: 12px 12px 5px 5px;
+}
+
+.custom-preview[data-style="rabo"] .preview-hair::after {
+  right: -11px;
+  top: 7px;
+  width: 11px;
+  height: 22px;
+  transform: rotate(-7deg);
+}
+
+.custom-preview[data-style="femininoA"] .preview-hair {
+  width: 39px;
+  height: 20px;
+  border-radius: 16px 12px 7px 11px;
+  box-shadow: -7px 8px 0 -2px var(--preview-hair, #7a4a24);
+}
+
+.custom-preview[data-style="femininoA"] .preview-hair::after {
+  right: -8px;
+  top: 6px;
+  width: 10px;
+  height: 18px;
+  transform: rotate(8deg);
+}
+
+.custom-preview[data-style="femininoB"] .preview-hair {
+  width: 45px;
+  height: 30px;
+  border-radius: 13px 13px 14px 14px;
+  box-shadow: 0 12px 0 -5px var(--preview-hair, #7a4a24), -10px 10px 0 -3px var(--preview-hair, #7a4a24), 10px 10px 0 -3px var(--preview-hair, #7a4a24);
+}
+
+.custom-preview[data-style="tranca"] .preview-hair {
+  width: 39px;
+  height: 20px;
+  border-radius: 14px 14px 8px 8px;
+}
+
+.custom-preview[data-style="cacheado"] .preview-hair {
+  background:
+    radial-gradient(circle at 20% 72%, var(--preview-hair, #7a4a24) 0 7px, transparent 8px),
+    radial-gradient(circle at 45% 76%, var(--preview-hair, #7a4a24) 0 7px, transparent 8px),
+    radial-gradient(circle at 72% 72%, var(--preview-hair, #7a4a24) 0 7px, transparent 8px),
+    var(--preview-hair, #7a4a24);
+}
+
+.custom-preview[data-style="bone"] .preview-hair {
+  height: 12px;
+  border-radius: 11px 11px 4px 4px;
+}
+
+.custom-preview[data-style="bone"] .preview-hair::before {
+  left: -3px;
+  right: -3px;
+  top: -5px;
+  height: 9px;
+  border-radius: 999px 999px 5px 5px;
+}
+
+.custom-preview[data-style="bone"] .preview-hair::after {
+  content: "";
+  position: absolute;
+  right: -12px;
+  top: -1px;
+  width: 18px;
+  height: 6px;
+  border-radius: 999px;
+  background: #2f6e8d;
+}
+
+.custom-preview[data-style="chapeu"] .preview-hair::before {
+  left: -10px;
+  right: -10px;
+  top: -7px;
+  height: 8px;
+  background: #7a4a24;
+  box-shadow: 12px -7px 0 -2px #9b6836;
+}
+
+.custom-preview[data-style="chapeuPalha"] .preview-hair {
+  width: 36px;
+  height: 12px;
+}
+
 .custom-preview[data-outfit="macacao"] .preview-body {
   border-radius: 4px;
   box-shadow: inset 0 10px rgba(255, 247, 220, 0.3);
@@ -1252,7 +1386,7 @@ body.is-night .cloud {
 
 .tool-buttons {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   gap: 8px;
   margin-top: 10px;
 }
@@ -1270,17 +1404,18 @@ body.is-night .cloud {
 
 .tool-buttons button {
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-columns: auto auto minmax(4.8rem, 1fr);
   align-items: center;
   gap: 6px;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
 }
 
 .tool-buttons button span {
   min-width: 0;
   line-height: 1.05;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .tool-button-icon {
@@ -1654,6 +1789,16 @@ body.is-night .cloud {
 
   to {
     translate: 115vw 0;
+  }
+}
+
+@keyframes page-rain-fall {
+  from {
+    background-position: 0 -96px;
+  }
+
+  to {
+    background-position: -42px 96px;
   }
 }
 

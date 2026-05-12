@@ -204,10 +204,16 @@ export class FarmScene extends Phaser.Scene {
   useTool(): void {
     const currentTile = this.playerSystem.getCurrentTile();
     const facingTile = this.playerSystem.getFacingTile();
+    const target = this.getTargetPlotInfo();
 
     if (this.map.isNearHouseDoor(currentTile) || this.map.isNearHouseDoor(facingTile)) {
       this.ui.showHouse();
       this.audio.play("click");
+      return;
+    }
+
+    if (target && this.inventory.currentTool !== "fishingRod") {
+      this.applyToolToPlot(target);
       return;
     }
 
@@ -239,7 +245,6 @@ export class FarmScene extends Phaser.Scene {
       return;
     }
 
-    const target = this.getTargetPlotInfo();
     if (!target) {
       this.ui.showMessage("Fique sobre, de frente ou clique em um canteiro para usar a ferramenta.", { type: "error" });
       this.audio.play("error");
@@ -346,6 +351,7 @@ export class FarmScene extends Phaser.Scene {
 
   toggleSound(): void {
     const muted = this.audio.toggleMuted();
+    this.audio.syncWeather(this.weather.weather);
     this.ui.syncSound(muted);
     this.ui.showMessage(muted ? "Som desligado." : "Som ligado.", { duration: 3000, type: "info" });
   }
@@ -569,22 +575,6 @@ export class FarmScene extends Phaser.Scene {
       return;
     }
 
-    if (this.map.isWaterTile(tile.x, tile.y) || this.map.isNearWater(tile)) {
-      if (this.inventory.currentTool !== "fishingRod") {
-        this.ui.showMessage("Equipe a vara de pesca para usar o lago.", { type: "info", duration: 3600 });
-        return;
-      }
-
-      if (!this.pointerSystem.isInRange(currentTile, tile, 4)) {
-        this.ui.showMessage("Chegue mais perto do lago para pescar.", { type: "warning" });
-        this.audio.play("error");
-        return;
-      }
-
-      this.tryFishing(currentTile);
-      return;
-    }
-
     if (this.map.isPlantingTile(tile.x, tile.y)) {
       const plot = this.crops.getPlotByTile(tile.x, tile.y);
       if (!plot) return;
@@ -603,6 +593,22 @@ export class FarmScene extends Phaser.Scene {
       }
 
       this.applyToolToPlot(target);
+      return;
+    }
+
+    if (this.map.isWaterTile(tile.x, tile.y) || this.map.isNearWater(tile)) {
+      if (this.inventory.currentTool !== "fishingRod") {
+        this.ui.showMessage("Equipe a vara de pesca para usar o lago.", { type: "info", duration: 3600 });
+        return;
+      }
+
+      if (!this.pointerSystem.isInRange(currentTile, tile, 4)) {
+        this.ui.showMessage("Chegue mais perto do lago para pescar.", { type: "warning" });
+        this.audio.play("error");
+        return;
+      }
+
+      this.tryFishing(currentTile);
       return;
     }
 
@@ -648,6 +654,7 @@ export class FarmScene extends Phaser.Scene {
   private syncUI(): void {
     this.ui.sync(this.dayNight.currentDay, this.weather.weather, this.inventory.data, this.economy.data);
     this.weatherVisual.sync(this.weather.weather);
+    this.audio.syncWeather(this.weather.weather);
   }
 
   private soundForTool(tool: ToolId): GameSound {

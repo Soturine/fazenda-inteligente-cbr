@@ -52,7 +52,7 @@ export class WaterSystem {
   static drawWaterTile(graphics: Phaser.GameObjects.Graphics, x: number, y: number, tileSize: number, time: number, weather: Weather): void {
     const px = x * tileSize;
     const py = y * tileSize;
-    const wind = weather === "chuvoso" ? 1.75 : weather === "nublado" ? 1.18 : weather === "seco" ? 0.82 : 1;
+    const wind = weather === "chuvoso" ? 2.35 : weather === "nublado" ? 1.28 : weather === "seco" ? 0.82 : 1;
     const pulse = Math.sin(time / 720 + x * 0.7 + y * 0.3) * 0.07 * wind;
     const wave = Math.sin(time / (weather === "chuvoso" ? 360 : 520) + x * 0.9 + y * 0.25) * 3 * wind;
     const color = weather === "chuvoso" ? 0x4a8db2 : weather === "seco" ? 0x4f9fc2 : 0x5fa8d3;
@@ -83,7 +83,7 @@ export class WaterSystem {
     const px = x * tileSize;
     const py = y * tileSize;
     this.lilies.filter((lily) => lily.x === x && lily.y === y).forEach((lily) => {
-      const wind = weather === "chuvoso" ? 1.9 : weather === "nublado" ? 1.28 : 1;
+      const wind = weather === "chuvoso" ? 2.45 : weather === "nublado" ? 1.34 : 1;
       const driftX = Math.sin(time / 1050 + lily.phase) * 2.1 * wind;
       const driftY = Math.cos(time / 1320 + lily.phase) * 1.2 * wind;
       const cx = px + lily.ox + driftX;

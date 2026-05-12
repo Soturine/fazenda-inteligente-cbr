@@ -18,6 +18,8 @@
 
 "O clima afeta o gameplay: chuva molha os canteiros naturalmente, seca acelera a perda de umidade, e o ciclo de céu mostra sol, lua, nuvens e paleta noturna para reforçar a passagem do tempo. Se o jogador não dormir, o amanhecer natural também avança o dia, muda o clima, atualiza economia e processa o crescimento."
 
+"Na versão atual, a chuva também aparece no fundo da página e tem som ambiente próprio. A grama, árvores, flores e lagoa reagem ao vento, deixando a fazenda mais viva sem tirar o foco da mecânica de CBR."
+
 "A Loja da Vila permite comprar sementes e vender itens. A Caixa de Venda, perto da casa, tem uma interface separada apenas para venda. Ao lado da loja há uma placa de Culturas com estatísticas puxadas dos dados do próprio jogo."
 
 ## 4. Onde está a IA

@@ -56,12 +56,18 @@ export class ToolVisualSystem {
     }
 
     if (tool === "harvest") {
-      graphics.lineStyle(3, 0x7a4a24, 1);
-      graphics.lineBetween(0, 2, 12 * dir, 11);
-      graphics.lineStyle(3, 0xd7d7c8, 1);
+      graphics.lineStyle(2, 0x7a4a24, 1);
       graphics.beginPath();
-      graphics.arc(11 * dir, 4, 8, -0.4, 1.2);
+      graphics.arc(7 * dir, 4, 7, Math.PI, 0);
       graphics.strokePath();
+      graphics.fillStyle(0xd8b06b, 1);
+      graphics.fillRoundedRect(0, 4, 15 * dir, 10, 3);
+      graphics.fillStyle(0x8d5627, 0.5);
+      graphics.fillRect(2 * dir, 9, 11 * dir, 2);
+      graphics.fillStyle(0xd94b3d, 1);
+      graphics.fillCircle(5 * dir, 6, 2.4);
+      graphics.fillStyle(0xf4cc58, 1);
+      graphics.fillCircle(10 * dir, 7, 2.2);
     }
 
     if (tool === "fishingRod") {
