@@ -10,6 +10,10 @@ export type GameSound =
   | "harvest"
   | "coin"
   | "click"
+  | "menu"
+  | "buy"
+  | "sell"
+  | "select"
   | "fish"
   | "error"
   | "nextDay"
@@ -112,6 +116,32 @@ export class SoundSystem {
     if (sound === "click") {
       this.tone(440, 0.035, "square", 0.025);
       this.tone(620, 0.04, "triangle", 0.022, 0.025);
+      return;
+    }
+
+    if (sound === "menu") {
+      this.tone(330, 0.045, "triangle", 0.026);
+      this.tone(495, 0.055, "triangle", 0.024, 0.035);
+      return;
+    }
+
+    if (sound === "buy") {
+      this.tone(520, 0.055, "triangle", 0.035);
+      this.tone(700, 0.065, "triangle", 0.032, 0.045);
+      this.tone(880, 0.07, "triangle", 0.026, 0.09);
+      return;
+    }
+
+    if (sound === "sell") {
+      this.tone(860, 0.05, "triangle", 0.04);
+      this.tone(1120, 0.07, "triangle", 0.034, 0.045);
+      this.noise(0.035, 0.018, 1700);
+      return;
+    }
+
+    if (sound === "select") {
+      this.tone(680, 0.045, "sine", 0.024);
+      this.tone(880, 0.045, "sine", 0.019, 0.04);
       return;
     }
 

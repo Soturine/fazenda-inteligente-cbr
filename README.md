@@ -22,7 +22,7 @@ https://soturine.github.io/fazenda-inteligente-cbr/
 
 ## Capturas Do Jogo
 
-As imagens abaixo mostram a versão atual da interface, com abertura, menu de jogo, fazenda jogável, loja, casa, pesca, culturas prontas e painel CBR integrado ao gameplay.
+As imagens abaixo mostram a versão atual da interface, com abertura, menu de jogo, fazenda jogável, chuva no fundo da página, passarela da lagoa, loja, casa, pesca, culturas prontas e painel CBR integrado ao gameplay.
 
 | Abertura | Menu principal |
 |---|---|
@@ -32,23 +32,35 @@ As imagens abaixo mostram a versão atual da interface, com abertura, menu de jo
 |---|---|
 | ![Fazenda](docs/screenshots/fazenda.png) | ![Chuva no mapa e no fundo](docs/screenshots/chuva.png) |
 
-| Culturas prontas | Pesca |
+| Passarela da lagoa | Pesca |
 |---|---|
-| ![Culturas prontas para colher](docs/screenshots/culturas-prontas.png) | ![Pesca](docs/screenshots/pesca.png) |
+| ![Passarela da lagoa](docs/screenshots/ponte-lagoa.png) | ![Pesca](docs/screenshots/pesca.png) |
+
+| Culturas prontas | CBR |
+|---|---|
+| ![Culturas prontas para colher](docs/screenshots/culturas-prontas.png) | ![CBR analisando um canteiro](docs/screenshots/cbr.png) |
 
 | Loja | Casa |
 |---|---|
 | ![Loja](docs/screenshots/loja.png) | ![Casa](docs/screenshots/casa.png) |
 
-| CBR |
-|---|---|
-| ![CBR analisando um canteiro](docs/screenshots/cbr.png) |
-
 ### GIFs Curtos
 
-| Chuva e vento |
-|---|
-| ![Chuva e vento no Vale dos Casos](docs/gifs/chuva-e-vento.gif) |
+| Customização | Chuva |
+|---|---|
+| ![Customização do personagem](docs/gifs/customizacao.gif) | ![Chuva no mapa e no fundo](docs/gifs/chuva.gif) |
+
+| Pesca | Loja e Caixa |
+|---|---|
+| ![Pesca com boia e fisgada](docs/gifs/pesca.gif) | ![Loja da Vila e Caixa de Venda](docs/gifs/loja-caixa.gif) |
+
+| Plantio e colheita | Assistente CBR |
+|---|---|
+| ![Plantio e colheita](docs/gifs/plantio-colheita.gif) | ![Espantalho CBR recomendando uma ação](docs/gifs/cbr.gif) |
+
+| Ciclo dia/noite | Vento e grama |
+|---|---|
+| ![Ciclo de dia e noite](docs/gifs/ciclo-dia-noite.gif) | ![Vento na grama e na fazenda](docs/gifs/vento-grama.gif) |
 
 ## Como Executar Localmente
 
@@ -170,9 +182,9 @@ O clima aparece no céu, no mapa e nos efeitos:
 - nublado: bastante nuvens passando e luz suave;
 - seco: tom amarelado, poucas nuvens, poeira e solo secando mais rápido.
 
-Ao chover, a chuva conta como rega natural: canteiros preparados ou plantados ficam com umidade alta, o solo seco volta ao estado normal e o crescimento passa a considerar essa água do dia. A chuva também aparece no fundo da página, atrás do jogo, e o som ambiente é gerado por Web Audio API, respeitando o botão de mute. Ao dormir, o jogo faz uma transição de noite com lua e paleta mais fria antes de amanhecer. Durante a sessão, o ciclo visual de dia e noite também avança de forma gradual em um ciclo mais longo, com cerca de 7 minutos: o sol nasce à esquerda, sobe, se põe à direita e dá lugar à lua, que percorre o mesmo arco durante a noite. Quando esse ciclo natural chega a um novo amanhecer, o jogo avança o dia de verdade. O brilho do fundo acompanha o astro principal, e a paleta passa suavemente por amanhecer, dia, entardecer, noite e madrugada. O fundo fora do canvas também muda com clima e noite, misturando chuva, nuvens ou seca com a iluminação do horário.
+Ao chover, a chuva conta como rega natural: canteiros preparados ou plantados ficam com umidade alta, o solo seco volta ao estado normal e o crescimento passa a considerar essa água do dia. A chuva também aparece no fundo da página, atrás do jogo, com gotas discretas em camadas para evitar faixas ou listras visuais, e o som ambiente é gerado por Web Audio API, respeitando o botão de mute. Ao dormir, o jogo faz uma transição de noite com lua e paleta mais fria antes de amanhecer. Durante a sessão, o ciclo visual de dia e noite também avança de forma gradual em um ciclo mais longo, com cerca de 7 minutos: o sol nasce à esquerda, sobe, se põe à direita e dá lugar à lua, que percorre o mesmo arco durante a noite. Quando esse ciclo natural chega a um novo amanhecer, o jogo avança o dia de verdade. O brilho do fundo acompanha o astro principal, e a paleta passa suavemente por amanhecer, dia, entardecer, noite e madrugada. O fundo fora do canvas também muda com clima e noite, misturando chuva, nuvens ou seca com a iluminação do horário.
 
-O mapa foi ampliado e usa câmera seguindo o jogador. Árvores maiores balançam com o vento, folhas cruzam a tela, a grama oscila com variação sutil de tom, a casa possui detalhes, a cerca tem variações de madeira vertical/horizontal e cantos, e a passarela antiga do lago é caminhável sem liberar o movimento pela água.
+O mapa foi ampliado e usa câmera seguindo o jogador. Árvores maiores balançam com o vento, folhas cruzam a tela, a grama oscila com variação sutil de tom, a casa possui detalhes, a cerca tem variações de madeira vertical/horizontal e cantos, e a passarela antiga do lago foi redesenhada com madeira e trilhos coerentes. Ela é caminhável no centro visual dos tiles sem liberar o movimento pela água.
 
 ## Ferramentas Visíveis
 
@@ -186,7 +198,7 @@ O personagem segura visualmente a ferramenta atual:
 - cesta para colher plantas prontas;
 - vara de pesca.
 
-As ações têm animações curtas, partículas, sons gerados por Web Audio API e mensagens amigáveis. O botão de som salva a preferência no LocalStorage.
+As ações têm animações curtas, partículas, sons gerados por Web Audio API e mensagens amigáveis. Há efeitos para plantar, regar, colher, pescar, comprar, vender, abrir menus, selecionar ferramentas/sementes, consultar o CBR, avançar o dia e ouvir chuva ambiente. O botão de som salva a preferência no LocalStorage.
 
 ## Como O CBR Aparece No Gameplay
 
@@ -288,6 +300,7 @@ Em caso de empate, o sistema prefere o caso com melhor resultado anterior.
 │   └── ui/UISystem.ts
 ├── docs/
 │   ├── screenshots/
+│   ├── gifs/
 │   ├── explicacao-cbr.md
 │   └── roteiro-apresentacao.md
 ├── .github/workflows/deploy.yml

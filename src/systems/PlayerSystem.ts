@@ -109,10 +109,12 @@ export class PlayerSystem {
 
     const nextX = this.player.x + dx;
     const nextY = this.player.y + dy;
-    const left = nextX - this.player.bodyWidth / 2;
-    const top = nextY - this.player.bodyHeight / 2;
+    const collisionWidth = 12;
+    const collisionHeight = 11;
+    const left = nextX - collisionWidth / 2;
+    const top = nextY + 2;
 
-    if (!this.map.isBlockedRect(left, top, this.player.bodyWidth, this.player.bodyHeight)) {
+    if (!this.map.isBlockedRect(left, top, collisionWidth, collisionHeight)) {
       this.player.setPosition(nextX, nextY);
     }
   }

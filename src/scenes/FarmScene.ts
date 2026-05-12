@@ -182,6 +182,7 @@ export class FarmScene extends Phaser.Scene {
     this.inventory.setTool(tool);
     this.player.setTool(tool);
     this.syncUI();
+    this.audio.play("select");
     this.ui.showMessage(`Ferramenta atual: ${toolLabels[tool]}.`, { duration: 3200, type: "info" });
   }
 
@@ -190,6 +191,7 @@ export class FarmScene extends Phaser.Scene {
     this.inventory.setTool("seed");
     this.player.setTool("seed");
     this.syncUI();
+    this.audio.play("select");
     this.ui.showMessage(`Semente selecionada: ${cropTypes[cropType].name}. Ferramenta alterada para Semente.`, { duration: 4200, type: "info" });
   }
 
@@ -198,6 +200,7 @@ export class FarmScene extends Phaser.Scene {
     this.inventory.setTool("seed");
     this.player.setTool("seed");
     this.syncUI();
+    this.audio.play("select");
     this.ui.showMessage(`Semente selecionada: ${cropTypes[cropType].name}. Ferramenta alterada para Semente.`, { duration: 4200, type: "info" });
   }
 
@@ -208,7 +211,7 @@ export class FarmScene extends Phaser.Scene {
 
     if (this.map.isNearHouseDoor(currentTile) || this.map.isNearHouseDoor(facingTile)) {
       this.ui.showHouse();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
@@ -225,13 +228,13 @@ export class FarmScene extends Phaser.Scene {
 
     if (this.map.isNearSellBox(currentTile) || this.map.isNearSellBox(facingTile)) {
       this.ui.showSellBox();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
     if (this.map.isNearShop(currentTile) || this.map.isNearShop(facingTile)) {
       this.ui.showShop();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
@@ -513,7 +516,7 @@ export class FarmScene extends Phaser.Scene {
   private buySeed(cropType: CropType): void {
     const result = this.shop.buySeed(cropType, 1);
     this.ui.showMessage(result.message, { type: result.ok ? "success" : "warning", duration: 4200 });
-    this.audio.play(result.ok ? "coin" : "error");
+    this.audio.play(result.ok ? "buy" : "error");
     this.syncUI();
     this.saveGame(false);
   }
@@ -521,7 +524,7 @@ export class FarmScene extends Phaser.Scene {
   private sellCrop(cropType: CropType): void {
     const result = this.shop.sellCrop(cropType);
     this.ui.showMessage(result.message, { type: result.ok ? "success" : "warning", duration: 4200 });
-    this.audio.play(result.ok ? "coin" : "error");
+    this.audio.play(result.ok ? "sell" : "error");
     this.syncUI();
     this.saveGame(false);
   }
@@ -529,7 +532,7 @@ export class FarmScene extends Phaser.Scene {
   private sellFish(fishId: FishTypeId): void {
     const result = this.shop.sellFish(fishId);
     this.ui.showMessage(result.message, { type: result.ok ? "success" : "warning", duration: 4200 });
-    this.audio.play(result.ok ? "coin" : "error");
+    this.audio.play(result.ok ? "sell" : "error");
     this.syncUI();
     this.saveGame(false);
   }
@@ -537,7 +540,7 @@ export class FarmScene extends Phaser.Scene {
   private openHouseOrSleep(): void {
     if (this.map.isNearHouseDoor(this.playerSystem.getCurrentTile())) {
       this.ui.showHouse();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
@@ -559,19 +562,19 @@ export class FarmScene extends Phaser.Scene {
 
     if (this.map.isNearHouseDoor(tile) && this.pointerSystem.isInRange(currentTile, this.map.houseDoorTile, 4)) {
       this.ui.showHouse();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
     if (this.map.isNearSellBox(tile) && this.pointerSystem.isInRange(currentTile, tile, 5)) {
       this.ui.showSellBox();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 
     if (this.map.isNearShop(tile) && this.pointerSystem.isInRange(currentTile, tile, 5)) {
       this.ui.showShop();
-      this.audio.play("click");
+      this.audio.play("menu");
       return;
     }
 

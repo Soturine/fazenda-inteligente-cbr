@@ -178,19 +178,55 @@ export class FarmMap {
         graphics.fillRect(px, py, this.tileSize, this.tileSize);
       }
 
+      const horizontal = this.isBridgeTile(x - 1, y) || this.isBridgeTile(x + 1, y) || this.getTile(x - 1, y) === "path" || this.getTile(x + 1, y) === "path";
+      const vertical = this.isBridgeTile(x, y - 1) || this.isBridgeTile(x, y + 1) || this.getTile(x, y - 1) === "path" || this.getTile(x, y + 1) === "path";
+      const isCrossing = horizontal && vertical;
+      const plankColor = (x + y) % 2 === 0 ? 0xb9874f : 0xa06933;
+      const railColor = 0x6f3f1e;
+
       graphics.fillStyle(0x000000, 0.16);
-      graphics.fillRect(px + 1, py + 20, this.tileSize - 2, 5);
+      graphics.fillRoundedRect(px + 2, py + 4, this.tileSize - 4, this.tileSize - 2, 4);
+      graphics.fillStyle(plankColor, 1);
+
+      if (isCrossing) {
+        graphics.fillRoundedRect(px + 3, py + 3, this.tileSize - 6, this.tileSize - 6, 3);
+      } else if (vertical) {
+        graphics.fillRoundedRect(px + 7, py, 18, this.tileSize, 3);
+      } else {
+        graphics.fillRoundedRect(px, py + 7, this.tileSize, 18, 3);
+      }
+
       graphics.fillStyle(0x8d5627, 1);
-      graphics.fillRect(px + 1, py + 8, this.tileSize - 2, 7);
-      graphics.fillRect(px + 1, py + 21, this.tileSize - 2, 7);
-      graphics.fillStyle(0xb9874f, 1);
-      graphics.fillRect(px + 3, py + 9, this.tileSize - 6, 3);
-      graphics.fillRect(px + 3, py + 22, this.tileSize - 6, 3);
-      graphics.fillStyle(0x623819, 0.42);
-      graphics.fillRect(px + 8, py + 5, 4, this.tileSize - 7);
-      graphics.fillRect(px + 21, py + 5, 4, this.tileSize - 7);
+      if (isCrossing || horizontal) {
+        graphics.fillRect(px, py + 7, this.tileSize, 4);
+        graphics.fillRect(px, py + 22, this.tileSize, 4);
+        graphics.fillStyle(0xd0a067, 0.72);
+        graphics.fillRect(px + 3, py + 13, this.tileSize - 6, 3);
+        graphics.fillRect(px + 3, py + 18, this.tileSize - 6, 2);
+      }
+
+      graphics.fillStyle(0x8d5627, 1);
+      if (isCrossing || vertical) {
+        graphics.fillRect(px + 7, py, 4, this.tileSize);
+        graphics.fillRect(px + 22, py, 4, this.tileSize);
+        graphics.fillStyle(0xd0a067, 0.72);
+        graphics.fillRect(px + 13, py + 3, 3, this.tileSize - 6);
+        graphics.fillRect(px + 18, py + 3, 2, this.tileSize - 6);
+      }
+
+      graphics.fillStyle(railColor, 0.9);
+      if (horizontal) {
+        graphics.fillRect(px + 1, py + 9, this.tileSize - 2, 2);
+        graphics.fillRect(px + 1, py + 24, this.tileSize - 2, 2);
+      }
+
+      if (vertical) {
+        graphics.fillRect(px + 9, py + 1, 2, this.tileSize - 2);
+        graphics.fillRect(px + 24, py + 1, 2, this.tileSize - 2);
+      }
+
       graphics.fillStyle(0xffdf92, 0.32);
-      graphics.fillRect(px + 5, py + 11, 8, 2);
+      graphics.fillRect(px + 5, py + 12, 8, 2);
     }
 
     if (type === "plot") {

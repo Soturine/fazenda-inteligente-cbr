@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.13.0] - 2026-05-12
+### Corrigido
+- Chuva de fundo da página refeita para usar gotas discretas em camadas, removendo o efeito de faixas/listras que parecia glitch visual.
+- Colisão da passarela da lagoa ajustada pela área dos pés do personagem, permitindo caminhar pelo centro visual dos tiles sem liberar a água como área caminhável.
+- Visual da passarela da lagoa redesenhado com madeira e trilhos mais consistentes, sem misturar pisos de forma confusa.
+
+### Adicionado
+- GIFs curtos no README para customização, chuva, pesca, loja/caixa de venda, plantio/colheita, Assistente CBR, ciclo dia/noite e vento/grama.
+- Screenshot dedicada da passarela da lagoa.
+- Sons discretos para compra, venda, abertura/interação de menu e seleção de ferramentas ou sementes.
+
+### Alterado
+- Screenshots do README atualizados para refletir a versão atual do jogo.
+- Documentação atualizada com a chuva de fundo corrigida, nova passarela da lagoa, mídias recentes e efeitos sonoros adicionais.
+
 ## [2.12.0] - 2026-05-12
 ### Corrigido
 - Cabelos e chapéus do personagem receberam silhuetas mais distintas, incluindo boné, chapéu de campo, chapéu de palha, cabelo longo, cacheado, trança e estilos femininos.

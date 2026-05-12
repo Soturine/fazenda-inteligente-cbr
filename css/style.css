@@ -128,30 +128,41 @@ kbd {
 .sky-layer::after {
   content: "";
   position: absolute;
-  inset: -14vh -8vw;
+  inset: -18vh -10vw;
   opacity: 0;
   pointer-events: none;
-  transform: skewX(-10deg);
+  transform: rotate(-7deg) translateZ(0);
+  transform-origin: 50% 0;
   background-image:
-    linear-gradient(180deg, rgba(226, 244, 255, 0) 0 34%, rgba(226, 244, 255, 0.52) 35% 43%, rgba(226, 244, 255, 0) 44% 100%);
-  background-size: 72px 96px;
-  animation: page-rain-fall 0.62s linear infinite;
+    radial-gradient(ellipse 1.3px 8px at 14px 18px, rgba(230, 248, 255, 0.58) 0 58%, transparent 62%),
+    radial-gradient(ellipse 1px 6px at 64px 42px, rgba(230, 248, 255, 0.48) 0 56%, transparent 62%),
+    radial-gradient(ellipse 1.1px 7px at 38px 86px, rgba(230, 248, 255, 0.5) 0 58%, transparent 64%),
+    radial-gradient(ellipse 0.9px 5px at 88px 112px, rgba(230, 248, 255, 0.38) 0 54%, transparent 64%);
+  background-size: 120px 150px;
+  background-position: 0 -150px;
+  animation: page-rain-fall 0.82s linear infinite;
   transition: opacity 0.35s ease;
+  will-change: background-position, opacity;
 }
 
 .sky-layer::after {
-  background-size: 108px 124px;
-  animation-duration: 0.88s;
-  animation-delay: -0.22s;
-  filter: blur(0.3px);
+  background-image:
+    radial-gradient(ellipse 1px 7px at 22px 30px, rgba(216, 239, 252, 0.38) 0 56%, transparent 64%),
+    radial-gradient(ellipse 0.9px 6px at 94px 70px, rgba(216, 239, 252, 0.34) 0 56%, transparent 64%),
+    radial-gradient(ellipse 1.2px 8px at 54px 126px, rgba(216, 239, 252, 0.42) 0 58%, transparent 64%);
+  background-size: 150px 190px;
+  background-position: 44px -190px;
+  animation-duration: 1.08s;
+  animation-delay: -0.28s;
+  filter: blur(0.15px);
 }
 
 body[data-weather="chuvoso"] .sky-layer::before {
-  opacity: 0.36;
+  opacity: 0.46;
 }
 
 body[data-weather="chuvoso"] .sky-layer::after {
-  opacity: 0.22;
+  opacity: 0.3;
 }
 
 body.is-night[data-weather="chuvoso"] .sky-layer::before,
@@ -1794,11 +1805,11 @@ body.is-night .cloud {
 
 @keyframes page-rain-fall {
   from {
-    background-position: 0 -96px;
+    background-position: 0 -190px;
   }
 
   to {
-    background-position: -42px 96px;
+    background-position: -44px 190px;
   }
 }
 

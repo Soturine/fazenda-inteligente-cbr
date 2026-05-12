@@ -20,6 +20,8 @@
 
 "Na versão atual, a chuva também aparece no fundo da página e tem som ambiente próprio. A grama, árvores, flores e lagoa reagem ao vento, deixando a fazenda mais viva sem tirar o foco da mecânica de CBR."
 
+"O README do projeto também inclui prints e GIFs curtos para mostrar customização, chuva, pesca, loja, caixa de venda, plantio, colheita, CBR, ciclo dia/noite, vento e a passarela da lagoa funcionando."
+
 "A Loja da Vila permite comprar sementes e vender itens. A Caixa de Venda, perto da casa, tem uma interface separada apenas para venda. Ao lado da loja há uma placa de Culturas com estatísticas puxadas dos dados do próprio jogo."
 
 ## 4. Onde está a IA
